@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Bike, CreditCard } from "lucide-react"
+import { Bike, CreditCard, User } from "lucide-react"
 
 interface CartSummaryProps {
     subtotal: number
@@ -135,36 +135,38 @@ export const CartCustomerForm = ({
         <>
             <Separator className="bg-slate-200 dark:bg-slate-700" />
             <div className="space-y-3">
-                <h3 className="font-semibold text-base text-slate-900 dark:text-white">Datos del Cliente</h3>
+                <h3 className="font-semibold text-base text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                    <User className="h-4 w-4 text-slate-900 dark:text-white" />
+                    Datos del Cliente</h3>
                 <div className="space-y-2">
                     <Label htmlFor="customerName" className="font-medium mb-3 block text-slate-900 dark:text-white">Nombres</Label>
                     <Input
                         id="customerName"
-                        placeholder="Juan Carlos"
+                        placeholder="Ingrese sus Nombres"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                        className="dark:placeholder:text-slate-500"
                     />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="customerLastName" className="font-medium mb-3 block text-slate-900 dark:text-white">Apellidos</Label>
                     <Input
                         id="customerLastName"
-                        placeholder="Pérez García"
+                        placeholder="Ingrese sus Apellidos"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                        className="dark:placeholder:text-slate-500"
                     />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="customerDNI" className="font-medium mb-3 block text-slate-900 dark:text-white">DNI</Label>
                     <Input
                         id="customerDNI"
-                        placeholder="12345678"
+                        placeholder="Ingrese su DNI"
                         value={dni}
                         onChange={(e) => setDNI(e.target.value)}
                         maxLength={8}
-                        className="dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                        className="dark:placeholder:text-slate-500"
                     />
                 </div>
                 <div className="space-y-2">
@@ -172,10 +174,10 @@ export const CartCustomerForm = ({
                     <Input
                         id="customerEmail"
                         type="email"
-                        placeholder="correo@ejemplo.com"
+                        placeholder="Ingrese su Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                        className="dark:placeholder:text-slate-500"
                     />
                 </div>
                 <div className="space-y-2">
@@ -183,11 +185,11 @@ export const CartCustomerForm = ({
                     <Input
                         id="customerPhone"
                         type="tel"
-                        placeholder="999 999 999"
+                        placeholder="Ingrese su Teléfono"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         maxLength={9}
-                        className="dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                        className="dark:placeholder:text-slate-500"
                     />
                 </div>
             </div>
@@ -197,10 +199,10 @@ export const CartCustomerForm = ({
                     <Label htmlFor="address" className="font-medium mb-3 block text-slate-900 dark:text-white">Dirección de Entrega</Label>
                     <Input
                         id="address"
-                        placeholder="Av. Example 123, Distrito, Ciudad"
+                        placeholder="Ingrese su Dirección de Entrega"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        className="dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                        className="dark:placeholder:text-slate-500"
                     />
                 </div>
             )}
@@ -247,16 +249,16 @@ export const CartPaymentMethodSelector = ({ paymentMethod, setPaymentMethod }: C
 
                 {/* Yape */}
                 <div
-                    className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === "yape"
-                        ? "border-purple-500 dark:border-purple-400 shadow-sm"
-                        : "border-border hover:border-purple-300 hover:bg-accent dark:hover:border-gray-600"
+                    className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === "yape"
+                        ? "border-purple-500 dark:border-purple-600 shadow-sm"
+                        : "border-border hover:border-purple-300"
                         }`}
                     onClick={() => setPaymentMethod("yape")}
                 >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "yape" ? "border-purple-500 dark:border-purple-400" : "border-muted-foreground/30"
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "yape" ? "border-purple-500 dark:border-purple-600" : "border-muted-foreground/30"
                         }`}>
                         {paymentMethod === "yape" && (
-                            <div className="w-2 h-2 rounded-full bg-purple-500 dark:bg-purple-400" />
+                            <div className="w-2 h-2 rounded-full bg-purple-200 dark:bg-purple-600" />
                         )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -275,15 +277,15 @@ export const CartPaymentMethodSelector = ({ paymentMethod, setPaymentMethod }: C
                 {/* Plin */}
                 <div
                     className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === "plin"
-                        ? "border-cyan-500 dark:border-cyan-400 shadow-sm"
-                        : "border-border hover:border-cyan-300 hover:bg-accent dark:hover:border-gray-600"
+                        ? "border-cyan-500 dark:border-cyan-600 shadow-sm"
+                        : "border-border hover:border-cyan-300 hover:bg-slate-50 dark:hover:border-gray-600 dark:hover:bg-slate-800"
                         }`}
                     onClick={() => setPaymentMethod("plin")}
                 >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "plin" ? "border-cyan-500 dark:border-cyan-400" : "border-muted-foreground/30"
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "plin" ? "border-cyan-500 dark:border-cyan-600" : "border-muted-foreground/30"
                         }`}>
                         {paymentMethod === "plin" && (
-                            <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400" />
+                            <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-600" />
                         )}
                     </div>
                     <div className="flex items-center gap-2">

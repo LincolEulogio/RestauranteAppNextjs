@@ -58,10 +58,10 @@ export default function CartSidebar() {
                         )}
                     </Button>
                 </SheetTrigger>
-                <SheetContent className="sm:w-[400px] p-0 max-w-full sm:max-w-[400px] bg-white border-l shadow-xl">
+                <SheetContent className="sm:w-[400px] p-0 max-w-full sm:max-w-[400px] bg-gray-800 border-l border-gray-800 shadow-xl">
                     <div className="h-full overflow-y-auto flex flex-col px-6 py-6 custom-scrollbar">
                         <SheetHeader className="pb-4 -mx-6 px-6">
-                            <SheetTitle>Tu Pedido</SheetTitle>
+                            <SheetTitle className="text-white flex items-center gap-2">Tu Pedido <ShoppingBag className="h-5 w-5" /></SheetTitle>
                         </SheetHeader>
 
                         {displayItems.length === 0 ? (

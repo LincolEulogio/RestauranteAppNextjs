@@ -23,7 +23,7 @@ export const CartPromoSection = ({
 }: CartPromoSectionProps) => {
     return (
         <div className="space-y-3 mb-6">
-            <div className="bg-gray-100 dark:bg-slate-900 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
+            <div className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2">
                         <div className="p-1.5 bg-orange-500 rounded-full">
@@ -31,7 +31,7 @@ export const CartPromoSection = ({
                         </div>
                         <div>
                             <h3 className="font-semibold text-sm text-orange-400">Promoción Aplicada</h3>
-                            <p className="text-xs font-medium">{selectedPromotion.title}</p>
+                            <p className="text-xs font-medium text-slate-300">{selectedPromotion.title}</p>
                         </div>
                     </div>
                     <Button
@@ -128,9 +128,9 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                 </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-3 mt-3">
                 {items.map((item) => (
-                    <div key={item.id} className="flex gap-4 group bg-white dark:bg-slate-950 p-2 rounded-lg transition-colors border border-transparent hover:border-orange-200 dark:hover:border-slate-700 shadow-sm dark:shadow-none">
+                    <div key={item.id} className="flex gap-4 group bg-slate-950 p-2 rounded-lg transition-colors border border-transparent dark:border-slate-700 shadow-sm dark:shadow-none">
                         {item.image && (
                             <div className="relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-muted">
                                 <Image
@@ -149,11 +149,11 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                             </div>
 
                             <div className="flex items-center justify-between mt-2">
-                                <div className="flex items-center gap-1 bg-gray-100 rounded-md p-0.5 h-7 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                <div className="flex items-center gap-1 rounded-md p-0.5 h-7 bg-slate-800 border border-slate-200 dark:border-slate-700">
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-6 w-6 hover:bg-background rounded-sm dark:hover:bg-background dark:hover:text-slate-100"
+                                        className="h-6 w-6 rounded-sm text-slate-100"
                                         onClick={() => {
                                             if (item.quantity > 1) {
                                                 updateQuantity(item.id, item.quantity - 1)
@@ -163,11 +163,11 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                                     >
                                         <Minus className="h-3 w-3" />
                                     </Button>
-                                    <span className="text-sm w-6 text-center font-medium tabular-nums text-slate-800 dark:text-slate-200">{item.quantity}</span>
+                                    <span className="text-sm w-6 text-center font-medium tabular-nums text-slate-100">{item.quantity}</span>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-6 w-6 hover:bg-background rounded-sm dark:hover:bg-background dark:hover:text-slate-100"
+                                        className="h-6 w-6 rounded-sm text-slate-100"
                                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                     >
                                         <Plus className="h-3 w-3" />
@@ -177,7 +177,7 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors dark:hover:bg-destructive/10 dark:hover:text-slate-100"
+                                    className="h-7 w-7 text-slate-100 hover:text-destructive hover:bg-destructive/10 transition-colors dark:hover:bg-destructive/10 dark:hover:text-slate-100"
                                     onClick={() => {
                                         Swal.fire({
                                             title: "¿Eliminar?",
@@ -185,7 +185,7 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                                             icon: "warning",
                                             showCancelButton: true,
                                             confirmButtonColor: "#ef4444",
-                                            cancelButtonColor: "#e5e7eb",
+                                            cancelButtonColor: "#888A8FFF",
                                             confirmButtonText: "Sí",
                                             cancelButtonText: "No",
                                             customClass: {
@@ -198,7 +198,7 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                                         })
                                     }}
                                 >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className="h-4 w-4 text-slate-100" />
                                 </Button>
                             </div>
                         </div>
