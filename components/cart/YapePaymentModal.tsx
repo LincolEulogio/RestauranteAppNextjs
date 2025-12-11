@@ -11,56 +11,63 @@ interface YapePaymentModalProps {
 
 export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: YapePaymentModalProps) {
     return (
-        <>
-            <DialogHeader className="space-y-3">
-                <DialogTitle className="flex items-center gap-2 text-foreground">
-                    <div className="bg-purple-600 dark:bg-purple-700 p-2 rounded-lg">
-                        <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+        <div className="bg-slate-950 text-slate-100 rounded-lg overflow-hidden">
+            <DialogHeader className="space-y-3 p-6 pb-2">
+                <DialogTitle className="flex items-center gap-3 text-xl">
+                    <div className="bg-purple-900/50 p-2.5 rounded-xl border border-purple-500/30 ring-2 ring-purple-500/10">
+                        <svg className="h-6 w-6 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                         </svg>
                     </div>
-                    Pago con Yape
+                    <span className="font-bold bg-gradient-to-r from-purple-400 to-purple-200 bg-clip-text text-transparent">
+                        Pago con Yape
+                    </span>
                 </DialogTitle>
-                <DialogDescription className="text-muted-foreground">
-                    Escanea el código QR con tu app Yape para completar el pago
+                <DialogDescription className="text-slate-400 text-base">
+                    Escanea el código QR desde tu app Yape
                 </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
-                <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="px-6 py-4 space-y-6">
+                <div className="flex flex-col items-center justify-center space-y-6">
                     {/* QR Code simulado */}
-                    <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border-2 border-purple-300 dark:border-purple-600 shadow-lg">
-                        <div className="w-48 h-48 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/50 dark:to-purple-800/50 rounded-lg flex items-center justify-center">
-                            <QrCode className="h-32 w-32 text-purple-600 dark:text-purple-300" />
+                    <div className="bg-white p-4 rounded-2xl shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] border-4 border-purple-500/20">
+                        <div className="w-48 h-48 bg-purple-100 rounded-lg flex items-center justify-center relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-transparent opacity-50" />
+                            <QrCode className="h-32 w-32 text-purple-700 relative z-10" />
                         </div>
                     </div>
-                    <div className="text-center space-y-2">
-                        <p className="font-semibold text-lg text-foreground">RestaurantePro</p>
-                        <p className="text-sm text-muted-foreground">Número: 987 654 321</p>
+
+                    <div className="text-center w-full bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <p className="text-xs font-medium text-purple-400 uppercase tracking-wider mb-1">Total a Pagar</p>
+                        <p className="font-bold text-3xl text-white tracking-tight">S/ {finalTotal.toFixed(2)}</p>
                     </div>
-                    <div className="p-4 rounded-lg w-full border-2 border-purple-500 dark:border-purple-400">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium">Monto a pagar:</span>
-                            <span className="font-bold text-2xl text-purple-600 dark:text-purple-400">S/ {finalTotal.toFixed(2)}</span>
-                        </div>
-                        <Separator className="my-2" />
-                        <div className="text-xs text-muted-foreground space-y-1.5 mt-3">
-                            <p className="flex items-center gap-2">• Abre tu app Yape</p>
-                            <p className="flex items-center gap-2">• Escanea el código QR</p>
-                            <p className="flex items-center gap-2">• Realiza el pago por el monto exacto</p>
-                        </div>
+
+                    <div className="w-full text-sm text-slate-400 space-y-2 bg-slate-900/30 p-4 rounded-lg border border-dashed border-slate-800">
+                        <p className="flex items-center gap-3">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-900/30 text-xs font-bold text-purple-400 ring-1 ring-purple-500/50">1</span>
+                            Abre Yape y escanea el QR
+                        </p>
+                        <p className="flex items-center gap-3">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-900/30 text-xs font-bold text-purple-400 ring-1 ring-purple-500/50">2</span>
+                            Verifica el monto y paga
+                        </p>
+                        <p className="flex items-center gap-3">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-900/30 text-xs font-bold text-purple-400 ring-1 ring-purple-500/50">3</span>
+                            Confirma con el botón de abajo
+                        </p>
                     </div>
 
                     <div className="w-full grid grid-cols-2 gap-3 pt-2">
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             onClick={onCancel}
-                            className="border-purple-200 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-800 dark:hover:bg-purple-900/20"
+                            className="text-slate-400 hover:text-white hover:bg-slate-800"
                         >
                             Cancelar
                         </Button>
                         <Button
                             onClick={onConfirm}
-                            className="bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-200 dark:shadow-none"
+                            className="bg-purple-600 hover:bg-purple-500 text-white font-semibold shadow-lg shadow-purple-900/20 border-t border-purple-400/20"
                         >
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Ya pagué
@@ -68,6 +75,6 @@ export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: Ya
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

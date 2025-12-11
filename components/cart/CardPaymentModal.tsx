@@ -33,54 +33,56 @@ export default function CardPaymentModal({
     onConfirm
 }: CardPaymentModalProps) {
     return (
-        <>
-            <DialogHeader className="space-y-3">
-                <DialogTitle className="flex items-center gap-2 text-foreground">
-                    <div className="bg-blue-800 p-2 rounded-lg">
-                        <CreditCard className="h-5 w-5 text-white" />
+        <div className="bg-slate-950 text-slate-100 rounded-lg overflow-hidden">
+            <DialogHeader className="space-y-3 p-6 pb-2">
+                <DialogTitle className="flex items-center gap-3 text-xl">
+                    <div className="bg-blue-900/50 p-2.5 rounded-xl border border-blue-500/30 ring-2 ring-blue-500/10">
+                        <CreditCard className="h-6 w-6 text-blue-400" />
                     </div>
-                    <span className="font-semibold text-base text-slate-900 dark:text-white">Información de Tarjeta</span>
+                    <span className="font-bold bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
+                        Pago con Tarjeta
+                    </span>
                 </DialogTitle>
-                <DialogDescription className="text-sm text-slate-500 dark:text-slate-400">
-                    Ingresa los datos de tu tarjeta de crédito o débito
+                <DialogDescription className="text-slate-400 text-base">
+                    Ingresa los datos de tu tarjeta para procesar el pago
                 </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="px-6 py-4 space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor="cardNumber" className="font-medium mb-3 block text-slate-900 dark:text-white">Número de Tarjeta</Label>
+                    <Label htmlFor="cardNumber" className="font-medium mb-1.5 block text-slate-300">Número de Tarjeta</Label>
                     <Input
                         id="cardNumber"
                         placeholder="1234 5678 9012 3456"
                         value={cardNumber}
                         onChange={(e) => setCardNumber(e.target.value)}
                         maxLength={19}
-                        className="outline-none text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="h-11 bg-slate-900/50 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="cardName" className="font-medium mb-3 block text-slate-900 dark:text-white">Nombre del Titular</Label>
+                    <Label htmlFor="cardName" className="font-medium mb-1.5 block text-slate-300">Nombre del Titular</Label>
                     <Input
                         id="cardName"
                         placeholder="JUAN PEREZ"
                         value={cardName}
                         onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                        className="outline-none text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        className="h-11 bg-slate-900/50 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="cardExpiry" className="font-medium mb-3 block text-slate-900 dark:text-white">Fecha de Expiración</Label>
+                        <Label htmlFor="cardExpiry" className="font-medium mb-1.5 block text-slate-300">Fecha de Expiración</Label>
                         <Input
                             id="cardExpiry"
                             placeholder="MM/YY"
                             value={cardExpiry}
                             onChange={(e) => setCardExpiry(e.target.value)}
                             maxLength={5}
-                            className="outline-none text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                            className="h-11 bg-slate-900/50 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="cardCvv" className="font-medium mb-3 block text-slate-900 dark:text-white">CVV</Label>
+                        <Label htmlFor="cardCvv" className="font-medium mb-1.5 block text-slate-300">CVV</Label>
                         <Input
                             id="cardCvv"
                             placeholder="123"
@@ -88,25 +90,24 @@ export default function CardPaymentModal({
                             onChange={(e) => setCardCvv(e.target.value)}
                             maxLength={4}
                             type="password"
-                            className="outline-none text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                            className="h-11 bg-slate-900/50 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
                         />
                     </div>
                 </div>
-                <div className="p-4 rounded-lg border-2 border-blue-500 dark:border-blue-400">
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-slate-900 dark:text-white">Total a pagar:</span>
-                        <span className="font-bold text-2xl text-blue-600 dark:text-blue-400">S/ {finalTotal.toFixed(2)}</span>
-                    </div>
+
+                <div className="mt-4 p-4 rounded-xl bg-slate-900/50 border border-slate-800 flex justify-between items-center">
+                    <span className="text-sm font-medium text-slate-400">Total a pagar:</span>
+                    <span className="font-bold text-2xl text-white">S/ {finalTotal.toFixed(2)}</span>
                 </div>
+
                 <Button
-                    className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
-                    size="lg"
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold h-11 text-base shadow-lg shadow-blue-900/20 border-t border-blue-400/20 mt-2"
                     onClick={onConfirm}
                 >
-                    <CreditCard className="h-4 w-4 mr-2" />
+                    <CreditCard className="h-5 w-5 mr-2" />
                     Confirmar Pago
                 </Button>
             </div>
-        </>
+        </div>
     )
 }
