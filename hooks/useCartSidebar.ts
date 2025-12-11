@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { useCartStore } from "@/store/useCartStore";
-import { createOrder, type CreateOrderData } from "@/lib/api/orders";
+import { CreateOrderData, createOrder, OrderItem } from "../lib/api/orders";
 import { processCartItems, calculateCartTotals } from "@/lib/cart-helpers";
 
 export const useCartSidebar = () => {
@@ -221,6 +221,23 @@ export const useCartSidebar = () => {
       return;
     }
 
+    // Combine regular items and promo items for the payload
+    const orderItems: OrderItem[] = [
+      ...regularItems.map((item) => ({
+        product_id: parseInt(item.id),
+        quantity: item.quantity,
+        special_instructions: "", // You could add notes for regular items if supported in UI
+      })),
+      ...promoItems.map((item) => ({
+        // Promo items have IDs like "promo-123", we need the real ID
+        product_id: parseInt(item.id.replace("promo-", "")),
+        quantity: item.quantity,
+        special_instructions: `** PROMOCIÓN: ${
+          selectedPromotion?.title || "Combo"
+        } **`,
+      })),
+    ];
+
     const orderData: CreateOrderData = {
       customer_name: customerName,
       customer_lastname: customerLastName || undefined,
@@ -230,12 +247,8 @@ export const useCartSidebar = () => {
       order_type: orderType === "delivery" ? "delivery" : "pickup",
       payment_method: paymentMethod || undefined,
       delivery_address: orderType === "delivery" ? deliveryAddress : undefined,
-      items: items.map((item) => ({
-        product_id: parseInt(item.id),
-        quantity: item.quantity,
-      })),
+      items: orderItems,
     };
-
     createOrderMutation.mutate(orderData);
   };
 
