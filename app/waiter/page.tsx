@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useWaiterAuthStore } from "@/lib/stores/waiterAuthStore";
+import { useWaiterAuthStore, useWaiterAuthStoreHydration } from "@/lib/stores/waiterAuthStore";
 import { waiterClient } from "@/lib/api/waiterClient";
 import { Loader2, LogOut, RefreshCw } from "lucide-react";
 import Swal from 'sweetalert2';
@@ -20,18 +20,60 @@ interface Table {
 
 export default function WaiterDashboard() {
     const { isAuthenticated, token, logout, user } = useWaiterAuthStore();
+    const hydrated = useWaiterAuthStoreHydration(); // Use the custom hook checks hydration
     const router = useRouter();
     const [tables, setTables] = useState<Table[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Inactivity Timer
     useEffect(() => {
-        if (!isAuthenticated || !token) {
+        if (!isAuthenticated) return;
+
+        let timeoutId: NodeJS.Timeout;
+        const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutes
+
+        const resetTimer = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                console.log("Inactivity timeout: Logging out waiter");
+                Swal.fire({
+                    title: 'Sesión Expirada',
+                    text: 'Su sesión ha cerrado por inactividad',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then(() => {
+                    logout();
+                    router.push("/waiter/login");
+                });
+            }, INACTIVITY_LIMIT);
+        };
+
+        // Listen for user activity
+        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        events.forEach(event => document.addEventListener(event, resetTimer));
+
+        // Start timer
+        resetTimer();
+
+        return () => {
+            clearTimeout(timeoutId);
+            events.forEach(event => document.removeEventListener(event, resetTimer));
+        };
+    }, [isAuthenticated, logout, router]);
+
+    useEffect(() => {
+        // Only redirect if effectively NOT authenticated and store IS hydrated
+        if (hydrated && (!isAuthenticated || !token)) {
             router.push("/waiter/login");
             return;
         }
-        fetchTables();
+
+        if (hydrated && isAuthenticated && token) {
+            fetchTables();
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAuthenticated, token, router]);
+    }, [hydrated, isAuthenticated, token, router]);
 
     const fetchTables = async () => {
         if (!token) return;
@@ -50,6 +92,10 @@ export default function WaiterDashboard() {
         }
     };
 
+    // ... rest of functions (updateTableStatus, etc) match existing code, 
+    // but I must include them or just replace the top part.
+    // Since this is a large file, I should try to target the start of the component up to fetchTables.
+
     const updateTableStatus = async (tableId: number, newStatus: 'available' | 'occupied' | 'reserved' | 'maintenance') => {
         if (!token) return;
         try {
@@ -63,16 +109,31 @@ export default function WaiterDashboard() {
     };
 
     const handleLogout = () => {
-        logout();
-        router.push("/waiter/login");
+        Swal.fire({
+            title: '¿Cerrar Sesión?',
+            text: "Se desconectará del sistema",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                logout();
+                router.push("/waiter/login");
+            }
+        });
     };
+
+    // Helper functions need to be preserved or I replace the whole component body?
+    // I'll assume I need to keep the UI exactly as is.
+    // I will replace from `export default function...` down to `if (!isAuthenticated...` to ensure I capture the new hooks.
 
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'available': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800';
             case 'occupied': return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800';
             case 'reserved': return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800';
-            case 'maintenance': return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'; // Changed/Added maintenance
+            case 'maintenance': return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600';
             default: return 'bg-gray-100 text-gray-800 border-gray-200';
         }
     };
@@ -82,17 +143,23 @@ export default function WaiterDashboard() {
             case 'available': return 'Disponible';
             case 'occupied': return 'Ocupada';
             case 'reserved': return 'Reservada';
-            case 'maintenance': return 'Mantenimiento'; // Changed to Maintenance
+            case 'maintenance': return 'Mantenimiento';
             default: return status;
         }
     };
 
+    // Replace the early return logic with a loader if not hydrated
+    if (!hydrated) {
+        return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin w-8 h-8 text-blue-600" /></div>;
+    }
+
     if (!isAuthenticated && !token) {
-        return null; // Redirecting
+        return null; // Will redirect via effect
     }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">

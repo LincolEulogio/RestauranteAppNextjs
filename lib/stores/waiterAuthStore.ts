@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { useEffect, useState } from "react";
 
 interface User {
   id: number;
@@ -31,3 +32,21 @@ export const useWaiterAuthStore = create<WaiterAuthState>()(
     }
   )
 );
+
+/*
+ * Helper to ensure we only render when store is hydrated.
+ * This prevents the flickering/redirect issue on reload.
+ */
+export const useWaiterAuthStoreHydration = () => {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsubFinish = useWaiterAuthStore.persist.onFinishHydration(() =>
+      setHydrated(true)
+    );
+    setHydrated(useWaiterAuthStore.persist.hasHydrated());
+    return () => unsubFinish();
+  }, []);
+
+  return hydrated;
+};
