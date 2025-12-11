@@ -47,7 +47,8 @@ export const useCartSidebar = () => {
   const totals = calculateCartTotals(
     promoItems,
     regularItems,
-    selectedPromotion
+    selectedPromotion,
+    orderType === "delivery" ? 0 : 0
   );
 
   const resetForm = () => {

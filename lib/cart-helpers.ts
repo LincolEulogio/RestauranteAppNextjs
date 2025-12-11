@@ -44,7 +44,8 @@ export const processCartItems = (
 export const calculateCartTotals = (
   promoItems: CartItem[],
   regularItems: CartItem[],
-  selectedPromotion: Promotion | null
+  selectedPromotion: Promotion | null,
+  deliveryFee: number = 0
 ): CartTotals => {
   const promoOriginalTotal = promoItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -69,8 +70,8 @@ export const calculateCartTotals = (
 
   const promoNetTotal = promoOriginalTotal - promoDiscount;
   const subtotal = promoNetTotal + regularTotal;
-  const shipping = 3.5;
-  const taxes = subtotal * 0.18;
+  const shipping = deliveryFee;
+  const taxes = 0; // Tax is included in price or calculated differently in backend
   const finalTotal = subtotal + shipping + taxes;
 
   return {

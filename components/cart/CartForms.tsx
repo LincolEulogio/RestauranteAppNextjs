@@ -24,10 +24,7 @@ export const CartSummary = ({ subtotal, shipping, taxes, finalTotal }: CartSumma
                         <span className="text-slate-600 dark:text-slate-400">Envío</span>
                         <span className="text-slate-900 dark:text-slate-200">S/. {shipping.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="text-slate-600 dark:text-slate-400">Impuestos</span>
-                        <span className="text-slate-900 dark:text-slate-200">S/. {taxes.toFixed(2)}</span>
-                    </div>
+
 
                 </div>
             </div>
