@@ -1,16 +1,15 @@
-"use client"
-
-import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { QrCode } from "lucide-react"
+import { QrCode, CheckCircle2 } from "lucide-react"
 
 interface YapePaymentModalProps {
     finalTotal: number
     onCancel: () => void
+    onConfirm: () => void
 }
 
-export default function YapePaymentModal({ finalTotal, onCancel }: YapePaymentModalProps) {
+export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: YapePaymentModalProps) {
     return (
         <>
             <DialogHeader className="space-y-3">
@@ -47,16 +46,26 @@ export default function YapePaymentModal({ finalTotal, onCancel }: YapePaymentMo
                         <div className="text-xs text-muted-foreground space-y-1.5 mt-3">
                             <p className="flex items-center gap-2">• Abre tu app Yape</p>
                             <p className="flex items-center gap-2">• Escanea el código QR</p>
-                            <p className="flex items-center gap-2">• Confirma el pago</p>
+                            <p className="flex items-center gap-2">• Realiza el pago por el monto exacto</p>
                         </div>
                     </div>
-                    <Button
-                        className="w-full border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/50"
-                        variant="outline"
-                        onClick={onCancel}
-                    >
-                        Cancelar
-                    </Button>
+
+                    <div className="w-full grid grid-cols-2 gap-3 pt-2">
+                        <Button
+                            variant="outline"
+                            onClick={onCancel}
+                            className="border-purple-200 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-800 dark:hover:bg-purple-900/20"
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={onConfirm}
+                            className="bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-200 dark:shadow-none"
+                        >
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Ya pagué
+                        </Button>
+                    </div>
                 </div>
             </div>
         </>

@@ -163,12 +163,14 @@ export default function CartSidebar() {
                         <YapePaymentModal
                             finalTotal={totals.finalTotal}
                             onCancel={() => setShowPaymentModal(false)}
+                            onConfirm={handleConfirmPayment}
                         />
                     )}
                     {paymentMethod === "plin" && (
                         <PlinPaymentModal
                             finalTotal={totals.finalTotal}
                             onCancel={() => setShowPaymentModal(false)}
+                            onConfirm={handleConfirmPayment}
                         />
                     )}
                 </DialogContent>

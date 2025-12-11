@@ -1,16 +1,15 @@
-"use client"
-
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { QrCode } from "lucide-react"
+import { QrCode, CheckCircle2 } from "lucide-react"
 
 interface PlinPaymentModalProps {
     finalTotal: number
     onCancel: () => void
+    onConfirm: () => void
 }
 
-export default function PlinPaymentModal({ finalTotal, onCancel }: PlinPaymentModalProps) {
+export default function PlinPaymentModal({ finalTotal, onCancel, onConfirm }: PlinPaymentModalProps) {
     return (
         <>
             <DialogHeader className="space-y-3">
@@ -47,16 +46,26 @@ export default function PlinPaymentModal({ finalTotal, onCancel }: PlinPaymentMo
                         <div className="text-xs text-muted-foreground space-y-1.5 mt-3">
                             <p className="flex items-center gap-2">• Abre tu app Plin</p>
                             <p className="flex items-center gap-2">• Escanea el código QR</p>
-                            <p className="flex items-center gap-2">• Confirma el pago</p>
+                            <p className="flex items-center gap-2">• Realiza el pago por el monto exacto</p>
                         </div>
                     </div>
-                    <Button
-                        className="w-full border-cyan-300 dark:border-cyan-700 hover:bg-cyan-50 dark:hover:bg-cyan-950/50"
-                        variant="outline"
-                        onClick={onCancel}
-                    >
-                        Cancelar
-                    </Button>
+
+                    <div className="w-full grid grid-cols-2 gap-3 pt-2">
+                        <Button
+                            variant="outline"
+                            onClick={onCancel}
+                            className="border-cyan-200 hover:bg-cyan-50 hover:text-cyan-700 dark:border-cyan-800 dark:hover:bg-cyan-900/20"
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={onConfirm}
+                            className="bg-cyan-600 hover:bg-cyan-700 text-white shadow-md shadow-cyan-200 dark:shadow-none"
+                        >
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Ya pagué
+                        </Button>
+                    </div>
                 </div>
             </div>
         </>
