@@ -319,7 +319,7 @@ export const useCartSidebar = () => {
     updateQuantity,
     removePromotion,
     selectedPromotion,
-    itemsCount: items.length,
+    itemsCount: items.length + (selectedPromotion ? 1 : 0),
 
     // Handlers
     handleProceedToPayment,
