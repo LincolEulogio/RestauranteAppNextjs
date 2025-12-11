@@ -136,7 +136,7 @@ export const useCartSidebar = () => {
       showWarning("Método de Pago", "Por favor selecciona un método de pago");
       return;
     }
-    if (orderType === "delivery") {
+    if (orderType === "delivery" || orderType === "online") {
       if (
         !customerName.trim() ||
         !customerLastName.trim() ||
@@ -155,6 +155,9 @@ export const useCartSidebar = () => {
         );
         return;
       }
+    }
+
+    if (orderType === "delivery") {
       if (!deliveryAddress.trim()) {
         showWarning(
           "Dirección Requerida",
@@ -178,7 +181,7 @@ export const useCartSidebar = () => {
       customer_dni: customerDNI || undefined,
       customer_email: customerEmail || undefined,
       customer_phone: customerPhone,
-      order_type: orderType === "delivery" ? "delivery" : "online",
+      order_type: orderType === "delivery" ? "delivery" : "pickup",
       payment_method: paymentMethod || undefined,
       delivery_address: orderType === "delivery" ? deliveryAddress : undefined,
       items: items.map((item) => ({

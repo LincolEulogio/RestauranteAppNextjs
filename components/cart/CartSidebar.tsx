@@ -108,8 +108,8 @@ export default function CartSidebar() {
                                     setPaymentMethod={setPaymentMethod}
                                 />
 
-                                {/* Datos del Cliente (para Delivery) */}
-                                {orderType === "delivery" && (
+                                {/* Datos del Cliente */}
+                                {(orderType === "delivery" || orderType === "online") && (
                                     <CartCustomerForm
                                         name={customerName} setName={setCustomerName}
                                         lastName={customerLastName} setLastName={setCustomerLastName}
@@ -117,7 +117,7 @@ export default function CartSidebar() {
                                         email={customerEmail} setEmail={setCustomerEmail}
                                         phone={customerPhone} setPhone={setCustomerPhone}
                                         address={deliveryAddress} setAddress={setDeliveryAddress}
-                                        showAddress={true}
+                                        showAddress={orderType === "delivery"}
                                     />
                                 )}
 

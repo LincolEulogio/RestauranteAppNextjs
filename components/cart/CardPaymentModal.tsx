@@ -39,7 +39,7 @@ export default function CardPaymentModal({
                     <div className="bg-blue-800 p-2 rounded-lg">
                         <CreditCard className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="font-semibold text-base text-slate-900 dark:text-white">Información de Tarjeta</h3>
+                    <span className="font-semibold text-base text-slate-900 dark:text-white">Información de Tarjeta</span>
                 </DialogTitle>
                 <DialogDescription className="text-sm text-slate-500 dark:text-slate-400">
                     Ingresa los datos de tu tarjeta de crédito o débito
