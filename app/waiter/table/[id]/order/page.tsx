@@ -6,6 +6,7 @@ import { useWaiterAuthStore } from "@/lib/stores/waiterAuthStore";
 import { useWaiterCartStore } from "@/lib/stores/waiterCartStore";
 import { waiterClient } from "@/lib/api/waiterClient";
 import apiClient from "@/lib/api/client";
+import Swal from 'sweetalert2';
 import { Loader2, ArrowLeft, Plus, Minus, Trash2, ShoppingBag, Search } from "lucide-react";
 import Image from "next/image";
 
@@ -75,6 +76,8 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
         return matchesCategory && matchesSearch && product.is_available;
     });
 
+
+
     const handleSubmitOrder = async () => {
         if (cart.items.length === 0) return;
 
@@ -90,13 +93,24 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
             }, token!);
 
             cart.clearCart();
-            // Show success message or redirect
-            // For now redirect back to dashboard or table detail
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Pedido Creado',
+                text: 'El pedido se ha enviado a cocina correctamente.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
             router.push(`/waiter`);
 
         } catch (error) {
             console.error("Error submitting order", error);
-            alert("Error al crear el pedido");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al crear el pedido. Por favor intente nuevamente.',
+            });
         } finally {
             setSubmitting(false);
         }

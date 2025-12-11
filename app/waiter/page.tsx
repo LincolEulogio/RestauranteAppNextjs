@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useWaiterAuthStore } from "@/lib/stores/waiterAuthStore";
 import { waiterClient } from "@/lib/api/waiterClient";
 import { Loader2, LogOut, RefreshCw } from "lucide-react";
+import Swal from 'sweetalert2';
 
 interface Table {
     id: number;
@@ -57,7 +58,7 @@ export default function WaiterDashboard() {
             setTables(prev => prev.map(t => t.id === tableId ? { ...t, status: newStatus } : t));
         } catch (error) {
             console.error("Error updating table status", error);
-            alert("Error actualizando estado de la mesa");
+            Swal.fire('Error', 'Error actualizando estado de la mesa', 'error');
         }
     };
 
@@ -131,10 +132,22 @@ export default function WaiterDashboard() {
                             <div
                                 key={table.id}
                                 onClick={() => {
-                                    router.push(`/waiter/table/${table.id}/order`);
+                                    if (table.status === 'available') {
+                                        router.push(`/waiter/table/${table.id}/order`);
+                                    } else {
+                                        Swal.fire({
+                                            toast: true,
+                                            position: 'top-end',
+                                            icon: 'info',
+                                            title: `La mesa está ${getStatusLabel(table.status)}`,
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        });
+                                    }
                                 }}
                                 className={`
-                    relative p-6 rounded-xl border-2 transition-all cursor-pointer hover:shadow-md
+                    relative p-6 rounded-xl border-2 transition-all hover:shadow-md
+                    ${table.status === 'available' ? 'cursor-pointer' : 'cursor-not-allowed opacity-90'}
                     ${getStatusColor(table.status)}
                     flex flex-col items-center justify-center aspect-square
                 `}
@@ -160,9 +173,20 @@ export default function WaiterDashboard() {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (confirm('¿Marcar mesa como DISPONIBLE?')) {
-                                                updateTableStatus(table.id, 'available');
-                                            }
+                                            Swal.fire({
+                                                title: '¿Marcar como DISPONIBLE?',
+                                                text: "La mesa cambiará a estado disponible",
+                                                icon: 'question',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#22c55e',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Sí, cambiar',
+                                                cancelButtonText: 'Cancelar'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    updateTableStatus(table.id, 'available');
+                                                }
+                                            });
                                         }}
                                         className="p-1.5 rounded-full bg-green-500 text-white hover:bg-green-600 shadow-sm"
                                         title="Disponible"
@@ -174,9 +198,20 @@ export default function WaiterDashboard() {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (confirm('¿Marcar mesa como OCUPADA?')) {
-                                                updateTableStatus(table.id, 'occupied');
-                                            }
+                                            Swal.fire({
+                                                title: '¿Marcar como OCUPADA?',
+                                                text: "La mesa cambiará a estado ocupada",
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#ef4444',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Sí, ocupar',
+                                                cancelButtonText: 'Cancelar'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    updateTableStatus(table.id, 'occupied');
+                                                }
+                                            });
                                         }}
                                         className="p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600 shadow-sm"
                                         title="Ocupada"
@@ -188,9 +223,20 @@ export default function WaiterDashboard() {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (confirm('¿Marcar mesa en MANTENIMIENTO?')) {
-                                                updateTableStatus(table.id, 'maintenance');
-                                            }
+                                            Swal.fire({
+                                                title: '¿Mantenimiento?',
+                                                text: "La mesa pasará a estado de mantenimiento",
+                                                icon: 'info',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#6b7280',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Confirmar',
+                                                cancelButtonText: 'Cancelar'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    updateTableStatus(table.id, 'maintenance');
+                                                }
+                                            });
                                         }}
                                         className="p-1.5 rounded-full bg-gray-500 text-white hover:bg-gray-600 shadow-sm"
                                         title="Mantenimiento"
