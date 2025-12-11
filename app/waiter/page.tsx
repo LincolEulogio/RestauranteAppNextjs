@@ -10,7 +10,7 @@ interface Table {
     id: number;
     table_number: string;
     capacity: number;
-    status: 'available' | 'occupied' | 'reserved' | 'cleaning';
+    status: 'available' | 'occupied' | 'reserved' | 'maintenance';
     current_session?: {
         id: number;
         waiter_id: number;
@@ -49,6 +49,18 @@ export default function WaiterDashboard() {
         }
     };
 
+    const updateTableStatus = async (tableId: number, newStatus: 'available' | 'occupied' | 'reserved' | 'maintenance') => {
+        if (!token) return;
+        try {
+            await waiterClient.patch(`/tables/${tableId}/status`, { status: newStatus }, token);
+            // Optimistic update or refetch
+            setTables(prev => prev.map(t => t.id === tableId ? { ...t, status: newStatus } : t));
+        } catch (error) {
+            console.error("Error updating table status", error);
+            alert("Error actualizando estado de la mesa");
+        }
+    };
+
     const handleLogout = () => {
         logout();
         router.push("/waiter/login");
@@ -59,7 +71,7 @@ export default function WaiterDashboard() {
             case 'available': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800';
             case 'occupied': return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800';
             case 'reserved': return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800';
-            case 'cleaning': return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
+            case 'maintenance': return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'; // Changed/Added maintenance
             default: return 'bg-gray-100 text-gray-800 border-gray-200';
         }
     };
@@ -69,7 +81,7 @@ export default function WaiterDashboard() {
             case 'available': return 'Disponible';
             case 'occupied': return 'Ocupada';
             case 'reserved': return 'Reservada';
-            case 'cleaning': return 'Limpieza';
+            case 'maintenance': return 'Mantenimiento'; // Changed to Maintenance
             default: return status;
         }
     };
@@ -139,6 +151,53 @@ export default function WaiterDashboard() {
                                 {table.status === 'occupied' && (
                                     <div className="absolute top-4 right-4 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                                 )}
+
+                                {/* Status Toggle Menu */}
+                                <div className="absolute inset-x-0 bottom-0 p-2 opacity-0 hover:opacity-100 transition-opacity bg-black/60 rounded-b-xl flex justify-center gap-2 backdrop-blur-sm"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {/* Available Button */}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (confirm('¿Marcar mesa como DISPONIBLE?')) {
+                                                updateTableStatus(table.id, 'available');
+                                            }
+                                        }}
+                                        className="p-1.5 rounded-full bg-green-500 text-white hover:bg-green-600 shadow-sm"
+                                        title="Disponible"
+                                    >
+                                        <div className="w-4 h-4 rounded-full border-2 border-white" />
+                                    </button>
+
+                                    {/* Occupied Button */}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (confirm('¿Marcar mesa como OCUPADA?')) {
+                                                updateTableStatus(table.id, 'occupied');
+                                            }
+                                        }}
+                                        className="p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600 shadow-sm"
+                                        title="Ocupada"
+                                    >
+                                        <div className="w-4 h-4 bg-white rounded-full" />
+                                    </button>
+
+                                    {/* Maintenance Button - Replaces Cleaning */}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (confirm('¿Marcar mesa en MANTENIMIENTO?')) {
+                                                updateTableStatus(table.id, 'maintenance');
+                                            }
+                                        }}
+                                        className="p-1.5 rounded-full bg-gray-500 text-white hover:bg-gray-600 shadow-sm"
+                                        title="Mantenimiento"
+                                    >
+                                        <div className="w-4 h-4 border-2 border-dashed border-white rounded-full" />
+                                    </button>
+                                </div>
                             </div>
                         ))}
 

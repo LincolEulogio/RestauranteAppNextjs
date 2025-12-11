@@ -47,6 +47,28 @@ export const waiterClient = {
     return response.json();
   },
 
+  async patch<T>(endpoint: string, data: unknown, token: string): Promise<T> {
+    const response = await fetch(`${API_URL}/api/waiter${endpoint}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `API Error: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   // Login separate as it's not under /api/waiter usually, or maybe it is standard login
   async login(credentials: unknown): Promise<{ token: string; user: any }> {
     // We'll use the standard Laravel Sanctum login
