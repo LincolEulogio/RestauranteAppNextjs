@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         hostname: "placehold.co",
       },
       {
+        // Cloudinary CDN
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
         // Allow images from backend (Laravel storage)
         protocol: "http",
         hostname: "localhost",
