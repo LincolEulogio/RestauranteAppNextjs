@@ -15,7 +15,7 @@ interface Product {
     id: number;
     name: string;
     price: string;
-    image_url?: string;
+    image?: string;
     category_id: number;
     description?: string;
     is_available: boolean;
@@ -136,7 +136,7 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                             <input
                                 type="text"
                                 placeholder="Buscar producto..."
-                                className="w-full pl-10 pr-4 py-2 border rounded-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-10 pr-4 py-2 border rounded-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:placeholder:text-gray-600 dark:focus:placeholder:text-gray-400 focus:border-blue-500 dark:focus:border-blue-500 text-gray-600 dark:text-gray-300"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -178,24 +178,34 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                             <div
                                 key={product.id}
                                 onClick={() => cart.addItem(product)}
-                                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow group"
+                                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md hover:border-blue-500 dark:hover:border-blue-500 transition-all group"
                             >
-                                <div className="relative h-32 w-full bg-gray-200 dark:bg-gray-700">
-                                    {product.image_url ? (
+                                <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-700">
+                                    {product.image ? (
                                         <img
-                                            src={product.image_url}
+                                            src={product.image}
                                             alt={product.name}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = 'none';
+                                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                            }}
                                         />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                            <span className="text-xs">Sin imagen</span>
+                                    ) : null}
+                                    <div className={`w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500 ${product.image ? 'hidden' : ''}`}>
+                                        <div className="text-center">
+                                            <div className="bg-gray-200 dark:bg-gray-600 rounded-full p-2 mb-1 mx-auto w-fit">
+                                                <ShoppingBag className="w-5 h-5" />
+                                            </div>
+                                            <span className="text-[10px] font-medium uppercase tracking-wide">Sin foto</span>
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
                                 <div className="p-3">
-                                    <h3 className="font-semibold text-gray-900 dark:text-white truncate">{product.name}</h3>
-                                    <p className="text-blue-600 font-bold mt-1">S/ {parseFloat(product.price).toFixed(2)}</p>
+                                    <div className="flex justify-between items-start gap-2">
+                                        <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 text-sm leading-tight">{product.name}</h3>
+                                    </div>
+                                    <p className="text-blue-600 dark:text-blue-400 font-bold mt-2">S/ {parseFloat(product.price).toFixed(2)}</p>
                                 </div>
                             </div>
                         ))}
@@ -206,7 +216,7 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
             {/* Right Side: Cart */}
             <div className="w-96 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col shadow-xl z-20">
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-900/50">
-                    <h2 className="font-bold text-lg flex items-center gap-2">
+                    <h2 className="font-bold text-lg flex items-center gap-2 text-gray-900 dark:text-white">
                         <ShoppingBag className="h-5 w-5" />
                         Pedido Actual
                     </h2>
@@ -229,27 +239,31 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                         </div>
                     ) : (
                         cart.items.map(item => (
-                            <div key={item.product_id} className="flex gap-3 items-start">
-                                <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                                    {item.image && (
+                            <div key={item.product_id} className="flex gap-3 items-start bg-white dark:bg-gray-800 p-2 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                                <div className="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden flex-shrink-0">
+                                    {item.image ? (
                                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-600">
+                                            <ShoppingBag className="w-6 h-6" />
+                                        </div>
                                     )}
                                 </div>
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-sm text-gray-900 dark:text-white line-clamp-2">{item.name}</h4>
-                                    <p className="text-blue-600 font-bold text-sm">S/ {(item.price * item.quantity).toFixed(2)}</p>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</h4>
+                                    <p className="text-blue-600 dark:text-blue-400 font-bold text-sm">S/ {(item.price * item.quantity).toFixed(2)}</p>
 
-                                    <div className="flex items-center gap-3 mt-2">
+                                    <div className="flex items-center gap-2 mt-2">
                                         <button
                                             onClick={() => cart.updateQuantity(item.product_id, item.quantity - 1)}
-                                            className="p-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                                            className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                                         >
                                             <Minus className="h-3 w-3" />
                                         </button>
-                                        <span className="text-sm font-medium w-4 text-center">{item.quantity}</span>
+                                        <span className="text-sm font-medium w-6 text-center text-gray-900 dark:text-white">{item.quantity}</span>
                                         <button
                                             onClick={() => cart.addItem({ id: item.product_id }, 1)}
-                                            className="p-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                                            className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                                         >
                                             <Plus className="h-3 w-3" />
                                         </button>
@@ -262,13 +276,13 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
 
                 <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                     <div className="flex justify-between items-center mb-4 text-lg font-bold">
-                        <span>Total</span>
-                        <span>S/ {cart.total().toFixed(2)}</span>
+                        <span className="text-gray-900 dark:text-white">Total</span>
+                        <span className="text-blue-600 dark:text-blue-400">S/ {cart.total().toFixed(2)}</span>
                     </div>
                     <button
                         onClick={handleSubmitOrder}
                         disabled={cart.items.length === 0 || submitting}
-                        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/30"
+                        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-blue-500/30"
                     >
                         {submitting ? (
                             <>

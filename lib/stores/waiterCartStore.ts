@@ -46,7 +46,7 @@ export const useWaiterCartStore = create<WaiterCartState>((set, get) => ({
             price: parseFloat(product.price),
             quantity,
             notes,
-            image: product.image_url,
+            image: product.image,
           },
         ],
       };
