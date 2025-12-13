@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useWaiterAuthStore, useWaiterAuthStoreHydration } from "@/lib/stores/waiterAuthStore";
 import { waiterClient } from "@/lib/api/waiterClient";
-import { Loader2, LogOut, RefreshCw } from "lucide-react";
+import { Loader2, LogOut, RefreshCw, User, ChevronDown, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import Swal from 'sweetalert2';
 
 interface Table {
@@ -22,44 +23,12 @@ export default function WaiterDashboard() {
     const { isAuthenticated, token, logout, user } = useWaiterAuthStore();
     const hydrated = useWaiterAuthStoreHydration(); // Use the custom hook checks hydration
     const router = useRouter();
+    const { theme, setTheme } = useTheme();
     const [tables, setTables] = useState<Table[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-    // Inactivity Timer
-    useEffect(() => {
-        if (!isAuthenticated) return;
 
-        let timeoutId: NodeJS.Timeout;
-        const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutes
-
-        const resetTimer = () => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                console.log("Inactivity timeout: Logging out waiter");
-                Swal.fire({
-                    title: 'Sesión Expirada',
-                    text: 'Su sesión ha cerrado por inactividad',
-                    icon: 'warning',
-                    confirmButtonText: 'Ok'
-                }).then(() => {
-                    logout();
-                    router.push("/waiter/login");
-                });
-            }, INACTIVITY_LIMIT);
-        };
-
-        // Listen for user activity
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-        events.forEach(event => document.addEventListener(event, resetTimer));
-
-        // Start timer
-        resetTimer();
-
-        return () => {
-            clearTimeout(timeoutId);
-            events.forEach(event => document.removeEventListener(event, resetTimer));
-        };
-    }, [isAuthenticated, logout, router]);
 
     useEffect(() => {
         // Only redirect if effectively NOT authenticated and store IS hydrated
@@ -84,8 +53,15 @@ export default function WaiterDashboard() {
         } catch (error) {
             console.error("Error fetching tables", error);
             if ((error as Error).message === 'Unauthorized') {
-                logout();
-                router.push("/waiter/login");
+                Swal.fire({
+                    title: 'Sesión Expirada',
+                    text: 'Su sesión ha expirado, por favor ingrese nuevamente.',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                }).then(() => {
+                    logout();
+                    router.push("/waiter/login");
+                });
             }
         } finally {
             setLoading(false);
@@ -163,24 +139,82 @@ export default function WaiterDashboard() {
             {/* Header */}
             <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                        Hola, {user?.name}
-                    </h1>
+                    <div className="flex items-center gap-3">
+                        <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full text-blue-600 dark:text-blue-400">
+                            <User className="w-5 h-5" />
+                        </div>
+                        <h1 className="text-lg font-bold text-gray-900 dark:text-white">
+                            Hola, {user?.name}
+                        </h1>
+                    </div>
+
                     <div className="flex items-center gap-4">
                         <button
                             onClick={fetchTables}
-                            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                             title="Actualizar"
                         >
                             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                         </button>
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                        >
-                            <LogOut className="w-5 h-5 mr-2" />
-                            Salir
-                        </button>
+
+                        {/* Profile Dropdown */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-gray-600"
+                            >
+                                <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                                    <User className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                                </div>
+                                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {isProfileOpen && (
+                                <>
+                                    <div
+                                        className="fixed inset-0 z-10"
+                                        onClick={() => setIsProfileOpen(false)}
+                                    />
+                                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-20 py-2 animate-in fade-in zoom-in-95 duration-200">
+                                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 mb-2">
+                                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name}</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role || 'Mesero'}</p>
+                                        </div>
+
+                                        <div className="px-2 mb-2">
+                                            <p className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tema</p>
+                                            <div className="grid grid-cols-2 gap-2 bg-gray-100 dark:bg-gray-900/50 p-1 rounded-lg">
+                                                <button
+                                                    onClick={() => setTheme("light")}
+                                                    className={`flex items-center justify-center gap-2 p-2 rounded-md transition-all ${theme === 'light' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:bg-gray-200/50 dark:hover:bg-gray-700'}`}
+                                                >
+                                                    <Sun className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => setTheme("dark")}
+                                                    className={`flex items-center justify-center gap-2 p-2 rounded-md transition-all ${theme === 'dark' ? 'bg-gray-700 shadow text-blue-400' : 'text-gray-500 hover:bg-gray-200/50 dark:hover:bg-gray-700'}`}
+                                                >
+                                                    <Moon className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="px-2">
+                                            <button
+                                                onClick={() => {
+                                                    setIsProfileOpen(false);
+                                                    handleLogout();
+                                                }}
+                                                className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                            >
+                                                <LogOut className="w-4 h-4 mr-2" />
+                                                Cerrar Sesión
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             </header>

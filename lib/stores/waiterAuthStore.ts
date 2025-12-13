@@ -27,7 +27,7 @@ export const useWaiterAuthStore = create<WaiterAuthState>()(
       logout: () => set({ token: null, user: null, isAuthenticated: false }),
     }),
     {
-      name: "waiter-auth-storage",
+      name: "waiter-auth-storage-v2",
       storage: createJSONStorage(() => localStorage),
     }
   )

@@ -2,12 +2,12 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { useWaiterAuthStore } from "@/lib/stores/waiterAuthStore";
+import { useWaiterAuthStore, useWaiterAuthStoreHydration } from "@/lib/stores/waiterAuthStore";
 import { useWaiterCartStore } from "@/lib/stores/waiterCartStore";
 import { waiterClient } from "@/lib/api/waiterClient";
 import apiClient from "@/lib/api/client";
 import Swal from 'sweetalert2';
-import { Loader2, ArrowLeft, Plus, Minus, Trash2, ShoppingBag, Search } from "lucide-react";
+import { Loader2, ArrowLeft, Plus, Minus, Trash2, ShoppingBag, Search, X, ChevronUp } from "lucide-react";
 import Image from "next/image";
 
 // Types
@@ -33,6 +33,7 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
 
     const router = useRouter();
     const { isAuthenticated, token } = useWaiterAuthStore();
+    const hydrated = useWaiterAuthStoreHydration();
 
     // State
     const [categories, setCategories] = useState<Category[]>([]);
@@ -41,17 +42,20 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
     // Cart Store
     const cart = useWaiterCartStore();
 
     useEffect(() => {
+        if (!hydrated) return; // Wait until store is rehydrated
+
         if (!isAuthenticated || !token) {
             router.push("/waiter/login");
             return;
         }
         loadData();
-    }, [isAuthenticated, token, router]);
+    }, [isAuthenticated, token, router, hydrated]);
 
     const loadData = async () => {
         try {
@@ -116,7 +120,7 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
         }
     };
 
-    if (loading) {
+    if (loading || !hydrated) {
         return <div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-blue-600" /></div>;
     }
 
@@ -213,21 +217,57 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                 </div>
             </div>
 
+            {/* Mobile Cart Toggle Button */}
+            <div className="lg:hidden fixed bottom-4 right-4 z-40">
+                <button
+                    onClick={() => setIsCartOpen(true)}
+                    className="bg-blue-600 text-white p-4 rounded-full shadow-lg shadow-blue-500/30 flex items-center gap-2 relative transition-transform hover:scale-105 active:scale-95"
+                >
+                    <ShoppingBag className="h-6 w-6" />
+                    <span className="font-bold">S/ {cart.total().toFixed(2)}</span>
+                    {cart.items.length > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white dark:border-gray-900">
+                            {cart.items.length}
+                        </span>
+                    )}
+                </button>
+            </div>
+
+            {/* Cart Overlay (Mobile) */}
+            {isCartOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm animate-in fade-in duration-200"
+                    onClick={() => setIsCartOpen(false)}
+                />
+            )}
+
             {/* Right Side: Cart */}
-            <div className="w-96 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col shadow-xl z-20">
+            <div className={`
+                fixed inset-y-0 right-0 w-full sm:w-96 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col shadow-2xl z-50 transition-transform duration-300 transform
+                lg:static lg:translate-x-0 lg:shadow-xl
+                ${isCartOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+            `}>
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-900/50">
                     <h2 className="font-bold text-lg flex items-center gap-2 text-gray-900 dark:text-white">
                         <ShoppingBag className="h-5 w-5" />
-                        Pedido Actual
+                        Pedido Actual ({cart.items.length})
                     </h2>
-                    {cart.items.length > 0 && (
+                    <div className="flex items-center gap-2">
+                        {cart.items.length > 0 && (
+                            <button
+                                onClick={cart.clearCart}
+                                className="text-red-500 text-sm hover:underline flex items-center gap-1 mr-2"
+                            >
+                                <Trash2 className="h-3 w-3" /> <span className="hidden sm:inline">Limpiar</span>
+                            </button>
+                        )}
                         <button
-                            onClick={cart.clearCart}
-                            className="text-red-500 text-sm hover:underline flex items-center gap-1"
+                            onClick={() => setIsCartOpen(false)}
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full lg:hidden"
                         >
-                            <Trash2 className="h-3 w-3" /> Limpiar
+                            <X className="h-6 w-6 text-gray-500" />
                         </button>
-                    )}
+                    </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">

@@ -79,7 +79,7 @@ export default function WaiterLoginPage() {
                                 autoComplete="current-password"
                                 required
                                 className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-700"
-                                placeholder="••••••••"
+                                placeholder="Tu contraseña"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
