@@ -90,6 +90,7 @@ export default function CartSidebar() {
                                         updateQuantity={updateQuantity}
                                         removeItem={removeItem}
                                         hasPromo={!!(selectedPromotion && promoItems.length > 0)}
+                                        setIsOpen={setIsOpen}
                                     />
                                 )}
 

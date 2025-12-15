@@ -116,9 +116,10 @@ interface CartRegularItemsProps {
     updateQuantity: (id: string, quantity: number) => void
     removeItem: (id: string) => void
     hasPromo: boolean
+    setIsOpen?: (open: boolean) => void
 }
 
-export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }: CartRegularItemsProps) => {
+export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo, setIsOpen }: CartRegularItemsProps) => {
     return (
         <div className="space-y-3 border border-slate-200 dark:border-slate-800 p-4 rounded-lg bg-slate-50 dark:bg-slate-900">
             {hasPromo && (
@@ -179,23 +180,15 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo }
                                     size="icon"
                                     className="h-7 w-7 text-slate-600 dark:text-slate-100 hover:text-destructive hover:bg-destructive/10 transition-colors"
                                     onClick={() => {
-                                        Swal.fire({
-                                            title: "¿Eliminar?",
-                                            text: "Se eliminará el producto",
-                                            icon: "warning",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#ef4444",
-                                            cancelButtonColor: "#888A8FFF",
-                                            confirmButtonText: "Sí",
-                                            cancelButtonText: "No",
-                                            customClass: {
-                                                popup: 'rounded-xl dark:bg-slate-800 dark:text-white',
-                                                confirmButton: 'rounded-lg',
-                                                cancelButton: 'rounded-lg text-gray-700 dark:text-gray-200 dark:bg-slate-700'
+                                        // Simple confirmation without closing sidebar
+                                        const result = window.confirm("¿Eliminar este producto del carrito?");
+                                        if (result) {
+                                            removeItem(item.id);
+                                            // Close sidebar if cart becomes empty (only 1 item left)
+                                            if (items.length === 1 && setIsOpen) {
+                                                setTimeout(() => setIsOpen(false), 300);
                                             }
-                                        }).then((result) => {
-                                            if (result.isConfirmed) removeItem(item.id)
-                                        })
+                                        }
                                     }}
                                 >
                                     <Trash2 className="h-4 w-4" />
