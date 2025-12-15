@@ -180,15 +180,48 @@ export const CartRegularItems = ({ items, updateQuantity, removeItem, hasPromo, 
                                     size="icon"
                                     className="h-7 w-7 text-slate-600 dark:text-slate-100 hover:text-destructive hover:bg-destructive/10 transition-colors"
                                     onClick={() => {
-                                        // Simple confirmation without closing sidebar
-                                        const result = window.confirm("¿Eliminar este producto del carrito?");
-                                        if (result) {
-                                            removeItem(item.id);
-                                            // Close sidebar if cart becomes empty (only 1 item left)
-                                            if (items.length === 1 && setIsOpen) {
-                                                setTimeout(() => setIsOpen(false), 300);
+                                        Swal.fire({
+                                            title: "¿Eliminar producto?",
+                                            text: "Se eliminará el producto de su carrito",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#ef4444",
+                                            cancelButtonColor: "#6b7280",
+                                            confirmButtonText: "Sí, eliminar",
+                                            cancelButtonText: "No",
+                                            backdrop: false, // Don't close sidebar
+                                            allowOutsideClick: false,
+                                            customClass: {
+                                                container: 'swal-high-z',
+                                                popup: 'rounded-xl dark:bg-slate-800 dark:text-white shadow-2xl',
+                                                confirmButton: 'rounded-lg cursor-pointer',
+                                                cancelButton: 'rounded-lg cursor-pointer'
+                                            },
+                                            heightAuto: false
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                removeItem(item.id);
+
+                                                // Show success toast
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Producto eliminado',
+                                                    toast: true,
+                                                    position: 'top-start',
+                                                    showConfirmButton: false,
+                                                    timer: 2000,
+                                                    timerProgressBar: true,
+                                                    customClass: {
+                                                        popup: 'rounded-xl shadow-lg'
+                                                    }
+                                                });
+
+                                                // Close sidebar if cart becomes empty (only 1 item left)
+                                                if (items.length === 1 && setIsOpen) {
+                                                    setTimeout(() => setIsOpen(false), 300);
+                                                }
                                             }
-                                        }
+                                        });
                                     }}
                                 >
                                     <Trash2 className="h-4 w-4" />
