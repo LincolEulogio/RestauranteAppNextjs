@@ -208,16 +208,16 @@ export const CartPaymentMethodSelector = ({ paymentMethod, setPaymentMethod }: C
 
                 {/* Yape */}
                 <div
-                    className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === "yape"
-                        ? "border-purple-500 dark:border-purple-600 shadow-sm"
-                        : "border-border hover:border-purple-300"
+                    className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === "yape"
+                            ? "border-purple-500 dark:border-purple-400 shadow-sm bg-purple-50/50 dark:bg-purple-900/10"
+                            : "border-gray-200 dark:border-slate-700 hover:border-purple-300 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-800"
                         }`}
                     onClick={() => setPaymentMethod("yape")}
                 >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "yape" ? "border-purple-500 dark:border-purple-600" : "border-muted-foreground/30"
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "yape" ? "border-purple-500 dark:border-purple-400" : "border-muted-foreground/30"
                         }`}>
                         {paymentMethod === "yape" && (
-                            <div className="w-2 h-2 rounded-full bg-purple-200 dark:bg-purple-600" />
+                            <div className="w-2 h-2 rounded-full bg-purple-500 dark:bg-purple-400" />
                         )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -236,15 +236,15 @@ export const CartPaymentMethodSelector = ({ paymentMethod, setPaymentMethod }: C
                 {/* Plin */}
                 <div
                     className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${paymentMethod === "plin"
-                        ? "border-cyan-500 dark:border-cyan-600 shadow-sm"
-                        : "border-border hover:border-cyan-300 hover:bg-slate-50 dark:hover:border-gray-600 dark:hover:bg-slate-800"
+                            ? "border-cyan-500 dark:border-cyan-400 shadow-sm bg-cyan-50/50 dark:bg-cyan-900/10"
+                            : "border-gray-200 dark:border-slate-700 hover:border-cyan-300 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-800"
                         }`}
                     onClick={() => setPaymentMethod("plin")}
                 >
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "plin" ? "border-cyan-500 dark:border-cyan-600" : "border-muted-foreground/30"
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${paymentMethod === "plin" ? "border-cyan-500 dark:border-cyan-400" : "border-muted-foreground/30"
                         }`}>
                         {paymentMethod === "plin" && (
-                            <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-600" />
+                            <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400" />
                         )}
                     </div>
                     <div className="flex items-center gap-2">
