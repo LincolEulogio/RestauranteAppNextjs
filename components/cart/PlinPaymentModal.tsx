@@ -11,19 +11,19 @@ interface PlinPaymentModalProps {
 
 export default function PlinPaymentModal({ finalTotal, onCancel, onConfirm }: PlinPaymentModalProps) {
     return (
-        <div className="bg-slate-950 text-slate-100 rounded-lg overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg overflow-hidden">
             <DialogHeader className="space-y-3 p-6 pb-2">
                 <DialogTitle className="flex items-center gap-3 text-xl">
-                    <div className="bg-cyan-900/50 p-2.5 rounded-xl border border-cyan-500/30 ring-2 ring-cyan-500/10">
-                        <svg className="h-6 w-6 text-cyan-400" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="bg-cyan-100 dark:bg-cyan-900/50 p-2.5 rounded-xl border border-cyan-300 dark:border-cyan-500/30 ring-2 ring-cyan-200 dark:ring-cyan-500/10">
+                        <svg className="h-6 w-6 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                     </div>
-                    <span className="font-bold bg-gradient-to-r from-cyan-400 to-cyan-200 bg-clip-text text-transparent">
+                    <span className="font-bold bg-gradient-to-r from-cyan-600 to-cyan-400 dark:from-cyan-400 dark:to-cyan-200 bg-clip-text text-transparent">
                         Pago con Plin
                     </span>
                 </DialogTitle>
-                <DialogDescription className="text-slate-400 text-base">
+                <DialogDescription className="text-slate-600 dark:text-slate-400 text-base">
                     Escanea el código QR desde tu app Plin
                 </DialogDescription>
             </DialogHeader>
@@ -37,22 +37,22 @@ export default function PlinPaymentModal({ finalTotal, onCancel, onConfirm }: Pl
                         </div>
                     </div>
 
-                    <div className="text-center w-full bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                    <div className="text-center w-full bg-slate-100 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-300 dark:border-slate-800">
                         <p className="text-xs font-medium text-cyan-400 uppercase tracking-wider mb-1">Total a Pagar</p>
-                        <p className="font-bold text-3xl text-white tracking-tight">S/ {finalTotal.toFixed(2)}</p>
+                        <p className="font-bold text-3xl text-slate-900 dark:text-white tracking-tight">S/ {finalTotal.toFixed(2)}</p>
                     </div>
 
-                    <div className="w-full text-sm text-slate-400 space-y-2 bg-slate-900/30 p-4 rounded-lg border border-dashed border-slate-800">
+                    <div className="w-full text-sm text-slate-600 dark:text-slate-400 space-y-2 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-lg border border-dashed border-slate-300 dark:border-slate-800">
                         <p className="flex items-center gap-3">
-                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-900/30 text-xs font-bold text-cyan-400 ring-1 ring-cyan-500/50">1</span>
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-900/30 text-xs font-bold text-white">1</span>
                             Abre Plin y escanea el QR
                         </p>
                         <p className="flex items-center gap-3">
-                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-900/30 text-xs font-bold text-cyan-400 ring-1 ring-cyan-500/50">2</span>
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-900/30 text-xs font-bold text-white">2</span>
                             Verifica el monto y paga
                         </p>
-                        <p className="flex items-center gap-3">
-                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-900/30 text-xs font-bold text-cyan-400 ring-1 ring-cyan-500/50">3</span>
+                        <p className="flex items-center gap-3"> 
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-900/30 text-xs font-bold text-white">3</span>
                             Confirma con el botón de abajo
                         </p>
                     </div>
@@ -61,13 +61,13 @@ export default function PlinPaymentModal({ finalTotal, onCancel, onConfirm }: Pl
                         <Button
                             variant="ghost"
                             onClick={onCancel}
-                            className="text-slate-400 hover:text-white hover:bg-slate-800"
+                            className="text-slate-600 hover:text-slate-900 bg-slate-200 hover:bg-slate-300 cursor-pointer"
                         >
                             Cancelar
                         </Button>
                         <Button
                             onClick={onConfirm}
-                            className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold shadow-lg shadow-cyan-900/20 border-t border-cyan-400/20"
+                            className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold shadow-lg shadow-cyan-900/20 cursor-pointer"
                         >
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Ya pagué

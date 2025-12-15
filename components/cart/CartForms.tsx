@@ -48,24 +48,12 @@ interface CartOrderTypeSelectorProps {
 export const CartOrderTypeSelector = ({ orderType, setOrderType, setPaymentMethod }: CartOrderTypeSelectorProps) => {
     return (
         <div className="space-y-3">
-            <h3 className="font-semibold text-base text-slate-900 dark:text-white">Tipo de Entrega / Pago</h3>
+            <h3 className="font-semibold text-base text-slate-900 dark:text-white">Tipo de Entrega</h3>
 
-            {/* Delivery */}
-            <div
-                className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${orderType === "delivery"
-                    ? "border-blue-500 dark:border-blue-400 shadow-sm bg-blue-50/50 dark:bg-blue-900/10"
-                    : "border-gray-200 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-800"
-                    }`}
-                onClick={() => {
-                    setOrderType("delivery")
-                    setPaymentMethod(null)
-                }}
-            >
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${orderType === "delivery" ? "border-blue-500 dark:border-blue-400" : "border-muted-foreground/30"
-                    }`}>
-                    {orderType === "delivery" && (
-                        <div className="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400" />
-                    )}
+            {/* Delivery - Always selected */}
+            <div className="flex items-center gap-3 p-3 border-2 rounded-lg border-blue-500 dark:border-blue-400 shadow-sm bg-blue-50/50 dark:bg-blue-900/10">
+                <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center border-blue-500 dark:border-blue-400">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400" />
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="bg-blue-500 p-1.5 rounded">
@@ -78,33 +66,7 @@ export const CartOrderTypeSelector = ({ orderType, setOrderType, setPaymentMetho
                 </div>
             </div>
 
-            {/* Pago en Línea */}
-            <div
-                className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${orderType === "online"
-                    ? "border-green-500 dark:border-green-400 shadow-sm bg-green-50/50 dark:bg-green-900/10"
-                    : "border-gray-200 dark:border-slate-700 hover:border-green-300 hover:bg-slate-50 dark:hover:border-slate-500 dark:hover:bg-slate-800"
-                    }`}
-                onClick={() => {
-                    setOrderType("online")
-                    setPaymentMethod(null)
-                }}
-            >
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${orderType === "online" ? "border-green-500 dark:border-green-400" : "border-muted-foreground/30"
-                    }`}>
-                    {orderType === "online" && (
-                        <div className="w-2 h-2 rounded-full bg-green-500 dark:bg-green-400" />
-                    )}
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="bg-green-500 p-1.5 rounded">
-                        <CreditCard className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                        <p className="font-medium text-sm text-slate-900 dark:text-white">Pago en Línea</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Paga antes de procesar tu pedido</p>
-                    </div>
-                </div>
-            </div>
+
         </div>
     )
 }

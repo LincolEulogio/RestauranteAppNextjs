@@ -58,10 +58,10 @@ export default function CartSidebar() {
                         )}
                     </Button>
                 </SheetTrigger>
-                <SheetContent className="sm:w-[400px] p-0 max-w-full sm:max-w-[400px] bg-gray-800 border-l border-gray-800 shadow-xl">
+                <SheetContent className="sm:w-[400px] p-0 max-w-full sm:max-w-[400px] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 shadow-xl">
                     <div className="h-full overflow-y-auto flex flex-col px-6 py-6 custom-scrollbar">
                         <SheetHeader className="pb-4 -mx-6 px-6">
-                            <SheetTitle className="text-white flex items-center gap-2">Tu Pedido <ShoppingBag className="h-5 w-5" /></SheetTitle>
+                            <SheetTitle className="text-gray-900 dark:text-white flex items-center gap-2">Tu Pedido <ShoppingBag className="h-5 w-5" /></SheetTitle>
                         </SheetHeader>
 
                         {displayItems.length === 0 ? (
@@ -109,27 +109,23 @@ export default function CartSidebar() {
                                 />
 
                                 {/* Datos del Cliente */}
-                                {(orderType === "delivery" || orderType === "online") && (
-                                    <CartCustomerForm
-                                        name={customerName} setName={setCustomerName}
-                                        lastName={customerLastName} setLastName={setCustomerLastName}
-                                        dni={customerDNI} setDNI={setCustomerDNI}
-                                        email={customerEmail} setEmail={setCustomerEmail}
-                                        phone={customerPhone} setPhone={setCustomerPhone}
-                                        address={deliveryAddress} setAddress={setDeliveryAddress}
-                                        showAddress={orderType === "delivery"}
-                                    />
-                                )}
+                                <CartCustomerForm
+                                    name={customerName} setName={setCustomerName}
+                                    lastName={customerLastName} setLastName={setCustomerLastName}
+                                    dni={customerDNI} setDNI={setCustomerDNI}
+                                    email={customerEmail} setEmail={setCustomerEmail}
+                                    phone={customerPhone} setPhone={setCustomerPhone}
+                                    address={deliveryAddress} setAddress={setDeliveryAddress}
+                                    showAddress={true}
+                                />
 
-                                {/* Métodos de Pago Secundarios */}
-                                {(orderType === "delivery" || orderType === "online") && (
-                                    <CartPaymentMethodSelector
-                                        paymentMethod={paymentMethod}
-                                        setPaymentMethod={setPaymentMethod}
-                                    />
-                                )}
+                                {/* Métodos de Pago */}
+                                <CartPaymentMethodSelector
+                                    paymentMethod={paymentMethod}
+                                    setPaymentMethod={setPaymentMethod}
+                                />
 
-                                <Button className="w-full font-bold dark:bg-orange-600 dark:text-white dark:hover:bg-orange-700" size="lg" onClick={handleProceedToPayment}>
+                                <Button className="w-full font-bold bg-orange-600 text-white hover:bg-orange-700" size="lg" onClick={handleProceedToPayment}>
                                     Proceder al Pago
                                 </Button>
                             </div>
