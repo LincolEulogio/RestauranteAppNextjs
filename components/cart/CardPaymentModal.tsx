@@ -4,8 +4,8 @@ import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/di
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CreditCard } from "lucide-react"
-import { Separator } from "@radix-ui/react-separator"
+import { CreditCard, AlertCircle, CheckCircle2 } from "lucide-react"
+import { useState, useEffect } from "react"
 
 interface CardPaymentModalProps {
     cardNumber: string
@@ -20,6 +20,29 @@ interface CardPaymentModalProps {
     onConfirm: () => void
 }
 
+// Luhn Algorithm for card validation
+const luhnCheck = (cardNumber: string): boolean => {
+    const digits = cardNumber.replace(/\s/g, '');
+    if (!/^\d+$/.test(digits)) return false;
+
+    let sum = 0;
+    let isEven = false;
+
+    for (let i = digits.length - 1; i >= 0; i--) {
+        let digit = parseInt(digits[i]);
+
+        if (isEven) {
+            digit *= 2;
+            if (digit > 9) digit -= 9;
+        }
+
+        sum += digit;
+        isEven = !isEven;
+    }
+
+    return sum % 10 === 0;
+};
+
 export default function CardPaymentModal({
     cardNumber,
     setCardNumber,
@@ -32,6 +55,117 @@ export default function CardPaymentModal({
     finalTotal,
     onConfirm
 }: CardPaymentModalProps) {
+    const [errors, setErrors] = useState({
+        cardNumber: '',
+        cardName: '',
+        cardExpiry: '',
+        cardCvv: ''
+    });
+
+    const [touched, setTouched] = useState({
+        cardNumber: false,
+        cardName: false,
+        cardExpiry: false,
+        cardCvv: false
+    });
+
+    // Format card number with spaces
+    const handleCardNumberChange = (value: string) => {
+        const cleaned = value.replace(/\s/g, '');
+        const formatted = cleaned.replace(/(\d{4})/g, '$1 ').trim();
+        setCardNumber(formatted.slice(0, 19));
+    };
+
+    // Format expiry date
+    const handleExpiryChange = (value: string) => {
+        const cleaned = value.replace(/\D/g, '');
+        if (cleaned.length >= 2) {
+            setCardExpiry(cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4));
+        } else {
+            setCardExpiry(cleaned);
+        }
+    };
+
+    // Validate card number
+    const validateCardNumber = (number: string): string => {
+        const cleaned = number.replace(/\s/g, '');
+        if (!cleaned) return 'Número de tarjeta requerido';
+        if (cleaned.length < 16) return 'Debe tener 16 dígitos';
+        if (!luhnCheck(cleaned)) return 'Número de tarjeta inválido';
+        return '';
+    };
+
+    // Validate cardholder name
+    const validateCardName = (name: string): string => {
+        if (!name.trim()) return 'Nombre del titular requerido';
+        if (name.trim().length < 3) return 'Nombre muy corto';
+        if (!/^[a-zA-Z\s]+$/.test(name)) return 'Solo letras y espacios';
+        return '';
+    };
+
+    // Validate expiry date
+    const validateExpiry = (expiry: string): string => {
+        if (!expiry) return 'Fecha de expiración requerida';
+        if (expiry.length < 5) return 'Formato: MM/YY';
+
+        const [month, year] = expiry.split('/');
+        const monthNum = parseInt(month);
+        const yearNum = parseInt('20' + year);
+
+        if (monthNum < 1 || monthNum > 12) return 'Mes inválido';
+
+        const now = new Date();
+        const expDate = new Date(yearNum, monthNum - 1);
+
+        if (expDate < now) return 'Tarjeta expirada';
+        return '';
+    };
+
+    // Validate CVV
+    const validateCvv = (cvv: string): string => {
+        if (!cvv) return 'CVV requerido';
+        if (cvv.length < 3) return 'Debe tener 3-4 dígitos';
+        if (!/^\d+$/.test(cvv)) return 'Solo números';
+        return '';
+    };
+
+    // Update errors on field change
+    useEffect(() => {
+        if (touched.cardNumber) {
+            setErrors(prev => ({ ...prev, cardNumber: validateCardNumber(cardNumber) }));
+        }
+    }, [cardNumber, touched.cardNumber]);
+
+    useEffect(() => {
+        if (touched.cardName) {
+            setErrors(prev => ({ ...prev, cardName: validateCardName(cardName) }));
+        }
+    }, [cardName, touched.cardName]);
+
+    useEffect(() => {
+        if (touched.cardExpiry) {
+            setErrors(prev => ({ ...prev, cardExpiry: validateExpiry(cardExpiry) }));
+        }
+    }, [cardExpiry, touched.cardExpiry]);
+
+    useEffect(() => {
+        if (touched.cardCvv) {
+            setErrors(prev => ({ ...prev, cardCvv: validateCvv(cardCvv) }));
+        }
+    }, [cardCvv, touched.cardCvv]);
+
+    const isFormValid = () => {
+        return !validateCardNumber(cardNumber) &&
+            !validateCardName(cardName) &&
+            !validateExpiry(cardExpiry) &&
+            !validateCvv(cardCvv);
+    };
+
+    const getFieldStatus = (field: keyof typeof errors) => {
+        if (!touched[field]) return '';
+        return errors[field] ? 'error' : 'success';
+    };
+
     return (
         <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg overflow-hidden">
             <DialogHeader className="space-y-3 p-6 pb-2">
@@ -48,50 +182,157 @@ export default function CardPaymentModal({
                 </DialogDescription>
             </DialogHeader>
             <div className="px-6 py-4 space-y-4">
+                {/* Card Number */}
                 <div className="space-y-2">
-                    <Label htmlFor="cardNumber" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">Número de Tarjeta</Label>
-                    <Input
-                        id="cardNumber"
-                        placeholder="1234 5678 9012 3456"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                        maxLength={19}
-                        className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
-                    />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="cardName" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">Nombre del Titular</Label>
-                    <Input
-                        id="cardName"
-                        placeholder="JUAN PEREZ"
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                        className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
-                    />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="cardExpiry" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">Fecha de Expiración</Label>
+                    <Label htmlFor="cardNumber" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                        Número de Tarjeta
+                    </Label>
+                    <div className="relative">
                         <Input
-                            id="cardExpiry"
-                            placeholder="MM/YY"
-                            value={cardExpiry}
-                            onChange={(e) => setCardExpiry(e.target.value)}
-                            maxLength={5}
-                            className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
+                            id="cardNumber"
+                            placeholder="1234 5678 9012 3456"
+                            value={cardNumber}
+                            onChange={(e) => handleCardNumberChange(e.target.value)}
+                            onBlur={() => setTouched(prev => ({ ...prev, cardNumber: true }))}
+                            maxLength={19}
+                            className={`h-11 pr-10 ${getFieldStatus('cardNumber') === 'error'
+                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                    : getFieldStatus('cardNumber') === 'success'
+                                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                        : ''
+                                }`}
                         />
+                        {getFieldStatus('cardNumber') && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                {getFieldStatus('cardNumber') === 'error' ? (
+                                    <AlertCircle className="h-5 w-5 text-red-500" />
+                                ) : (
+                                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                                )}
+                            </div>
+                        )}
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="cardCvv" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">CVV</Label>
+                    {errors.cardNumber && touched.cardNumber && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cardNumber}
+                        </p>
+                    )}
+                </div>
+
+                {/* Cardholder Name */}
+                <div className="space-y-2">
+                    <Label htmlFor="cardName" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                        Nombre del Titular
+                    </Label>
+                    <div className="relative">
                         <Input
-                            id="cardCvv"
-                            placeholder="123"
-                            value={cardCvv}
-                            onChange={(e) => setCardCvv(e.target.value)}
-                            maxLength={4}
-                            type="password"
-                            className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500/50 focus:ring-blue-500/20"
+                            id="cardName"
+                            placeholder="JUAN PEREZ"
+                            value={cardName}
+                            onChange={(e) => setCardName(e.target.value.toUpperCase())}
+                            onBlur={() => setTouched(prev => ({ ...prev, cardName: true }))}
+                            className={`h-11 pr-10 ${getFieldStatus('cardName') === 'error'
+                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                    : getFieldStatus('cardName') === 'success'
+                                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                        : ''
+                                }`}
                         />
+                        {getFieldStatus('cardName') && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                {getFieldStatus('cardName') === 'error' ? (
+                                    <AlertCircle className="h-5 w-5 text-red-500" />
+                                ) : (
+                                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    {errors.cardName && touched.cardName && (
+                        <p className="text-sm text-red-500 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {errors.cardName}
+                        </p>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Expiry Date */}
+                    <div className="space-y-2">
+                        <Label htmlFor="cardExpiry" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                            Fecha de Expiración
+                        </Label>
+                        <div className="relative">
+                            <Input
+                                id="cardExpiry"
+                                placeholder="MM/YY"
+                                value={cardExpiry}
+                                onChange={(e) => handleExpiryChange(e.target.value)}
+                                onBlur={() => setTouched(prev => ({ ...prev, cardExpiry: true }))}
+                                maxLength={5}
+                                className={`h-11 pr-10 ${getFieldStatus('cardExpiry') === 'error'
+                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                        : getFieldStatus('cardExpiry') === 'success'
+                                            ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                            : ''
+                                    }`}
+                            />
+                            {getFieldStatus('cardExpiry') && (
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                    {getFieldStatus('cardExpiry') === 'error' ? (
+                                        <AlertCircle className="h-4 w-4 text-red-500" />
+                                    ) : (
+                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                        {errors.cardExpiry && touched.cardExpiry && (
+                            <p className="text-xs text-red-500 flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" />
+                                {errors.cardExpiry}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* CVV */}
+                    <div className="space-y-2">
+                        <Label htmlFor="cardCvv" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                            CVV
+                        </Label>
+                        <div className="relative">
+                            <Input
+                                id="cardCvv"
+                                placeholder="123"
+                                value={cardCvv}
+                                onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, ''))}
+                                onBlur={() => setTouched(prev => ({ ...prev, cardCvv: true }))}
+                                maxLength={4}
+                                type="password"
+                                className={`h-11 pr-10 ${getFieldStatus('cardCvv') === 'error'
+                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                        : getFieldStatus('cardCvv') === 'success'
+                                            ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                            : ''
+                                    }`}
+                            />
+                            {getFieldStatus('cardCvv') && (
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                    {getFieldStatus('cardCvv') === 'error' ? (
+                                        <AlertCircle className="h-4 w-4 text-red-500" />
+                                    ) : (
+                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                        {errors.cardCvv && touched.cardCvv && (
+                            <p className="text-xs text-red-500 flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" />
+                                {errors.cardCvv}
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -101,8 +342,9 @@ export default function CardPaymentModal({
                 </div>
 
                 <Button
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold h-11 text-base shadow-lg shadow-blue-900/20 border-t border-blue-400/20 mt-2"
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold h-11 text-base shadow-lg shadow-blue-900/20 border-t border-blue-400/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={onConfirm}
+                    disabled={!isFormValid()}
                 >
                     <CreditCard className="h-5 w-5 mr-2" />
                     Confirmar Pago

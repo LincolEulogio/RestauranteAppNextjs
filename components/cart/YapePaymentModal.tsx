@@ -1,7 +1,10 @@
 import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { QrCode, CheckCircle2 } from "lucide-react"
+import { QrCode, CheckCircle2, Smartphone } from "lucide-react"
+import { useState } from "react"
 
 interface YapePaymentModalProps {
     finalTotal: number
@@ -10,6 +13,41 @@ interface YapePaymentModalProps {
 }
 
 export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: YapePaymentModalProps) {
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+    const [phoneError, setPhoneError] = useState('');
+
+    const validatePhone = (phone: string): boolean => {
+        if (!phone) {
+            setPhoneError('Número de teléfono requerido');
+            return false;
+        }
+        if (phone.length !== 9) {
+            setPhoneError('Debe tener 9 dígitos');
+            return false;
+        }
+        if (!phone.startsWith('9')) {
+            setPhoneError('Debe iniciar con 9');
+            return false;
+        }
+        setPhoneError('');
+        return true;
+    };
+
+    const handlePhoneChange = (value: string) => {
+        const cleaned = value.replace(/\D/g, '');
+        setPhoneNumber(cleaned.slice(0, 9));
+        if (cleaned.length === 9) {
+            validatePhone(cleaned);
+        }
+    };
+
+    const isFormValid = () => {
+        return phoneNumber.length === 9 &&
+            phoneNumber.startsWith('9') &&
+            paymentConfirmed;
+    };
+
     return (
         <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg overflow-hidden">
             <DialogHeader className="space-y-3 p-6 pb-2">
@@ -27,8 +65,28 @@ export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: Ya
                     Escanea el código QR desde tu app Yape
                 </DialogDescription>
             </DialogHeader>
-            <div className="px-6 py-4 space-y-6">
-                <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="px-6 py-4 space-y-4">
+                {/* Phone Number Input */}
+                <div className="space-y-2">
+                    <Label htmlFor="yapePhone" className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                        <Smartphone className="h-4 w-4" />
+                        Número de Yape
+                    </Label>
+                    <Input
+                        id="yapePhone"
+                        placeholder="987654321"
+                        value={phoneNumber}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        onBlur={() => validatePhone(phoneNumber)}
+                        maxLength={9}
+                        className={`h-11 ${phoneError ? 'border-red-500' : phoneNumber.length === 9 ? 'border-green-500' : ''}`}
+                    />
+                    {phoneError && (
+                        <p className="text-sm text-red-500">{phoneError}</p>
+                    )}
+                </div>
+
+                <div className="flex flex-col items-center justify-center space-y-4">
                     {/* QR Code simulado */}
                     <div className="bg-white p-4 rounded-2xl shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] border-4 border-purple-500/20">
                         <div className="w-48 h-48 bg-purple-100 rounded-lg flex items-center justify-center relative overflow-hidden group">
@@ -53,8 +111,23 @@ export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: Ya
                         </p>
                         <p className="flex items-center gap-3">
                             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-900/30 text-xs font-bold text-white">3</span>
-                            Confirma con el botón de abajo
+                            Marca la casilla y confirma
                         </p>
+                    </div>
+
+                    {/* Confirmation Checkbox */}
+                    <div className="w-full bg-purple-50 dark:bg-purple-900/10 border-2 border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                        <label className="flex items-start gap-3 cursor-pointer group">
+                            <input
+                                type="checkbox"
+                                checked={paymentConfirmed}
+                                onChange={(e) => setPaymentConfirmed(e.target.checked)}
+                                className="mt-1 h-5 w-5 rounded border-purple-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                            />
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                Confirmo que he realizado el pago mediante Yape
+                            </span>
+                        </label>
                     </div>
 
                     <div className="w-full grid grid-cols-2 gap-3 pt-2">
@@ -67,7 +140,8 @@ export default function YapePaymentModal({ finalTotal, onCancel, onConfirm }: Ya
                         </Button>
                         <Button
                             onClick={onConfirm}
-                            className="bg-purple-600 hover:bg-purple-500 text-white font-semibold shadow-lg shadow-purple-900/20 border-t border-purple-400/20 cursor-pointer"
+                            disabled={!isFormValid()}
+                            className="bg-purple-600 hover:bg-purple-500 text-white font-semibold shadow-lg shadow-purple-900/20 border-t border-purple-400/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Ya pagué
