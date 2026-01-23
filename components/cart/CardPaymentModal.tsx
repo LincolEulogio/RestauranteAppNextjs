@@ -167,24 +167,24 @@ export default function CardPaymentModal({
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg overflow-hidden">
+        <div className="bg-background text-foreground rounded-lg overflow-hidden">
             <DialogHeader className="space-y-3 p-6 pb-2">
                 <DialogTitle className="flex items-center gap-3 text-xl">
-                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2.5 rounded-xl border border-blue-300 dark:border-blue-500/30 ring-2 ring-blue-200 dark:ring-blue-500/10">
+                    <div className="bg-blue-500/10 p-2.5 rounded-xl border border-blue-500/30">
                         <CreditCard className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <span className="font-bold bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200 bg-clip-text text-transparent">
                         Pago con Tarjeta
                     </span>
                 </DialogTitle>
-                <DialogDescription className="text-slate-600 dark:text-slate-400 text-base">
+                <DialogDescription className="text-muted-foreground text-base">
                     Ingresa los datos de tu tarjeta para procesar el pago
                 </DialogDescription>
             </DialogHeader>
             <div className="px-6 py-4 space-y-4">
                 {/* Card Number */}
                 <div className="space-y-2">
-                    <Label htmlFor="cardNumber" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                    <Label htmlFor="cardNumber" className="font-medium mb-1.5 block text-foreground">
                         Número de Tarjeta
                     </Label>
                     <div className="relative">
@@ -196,10 +196,10 @@ export default function CardPaymentModal({
                             onBlur={() => setTouched(prev => ({ ...prev, cardNumber: true }))}
                             maxLength={19}
                             className={`h-11 pr-10 ${getFieldStatus('cardNumber') === 'error'
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                                    : getFieldStatus('cardNumber') === 'success'
-                                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
-                                        : ''
+                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                : getFieldStatus('cardNumber') === 'success'
+                                    ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                    : ''
                                 }`}
                         />
                         {getFieldStatus('cardNumber') && (
@@ -222,7 +222,7 @@ export default function CardPaymentModal({
 
                 {/* Cardholder Name */}
                 <div className="space-y-2">
-                    <Label htmlFor="cardName" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                    <Label htmlFor="cardName" className="font-medium mb-1.5 block text-foreground">
                         Nombre del Titular
                     </Label>
                     <div className="relative">
@@ -233,10 +233,10 @@ export default function CardPaymentModal({
                             onChange={(e) => setCardName(e.target.value.toUpperCase())}
                             onBlur={() => setTouched(prev => ({ ...prev, cardName: true }))}
                             className={`h-11 pr-10 ${getFieldStatus('cardName') === 'error'
-                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                                    : getFieldStatus('cardName') === 'success'
-                                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
-                                        : ''
+                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                : getFieldStatus('cardName') === 'success'
+                                    ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                    : ''
                                 }`}
                         />
                         {getFieldStatus('cardName') && (
@@ -260,7 +260,7 @@ export default function CardPaymentModal({
                 <div className="grid grid-cols-2 gap-4">
                     {/* Expiry Date */}
                     <div className="space-y-2">
-                        <Label htmlFor="cardExpiry" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="cardExpiry" className="font-medium mb-1.5 block text-foreground">
                             Fecha de Expiración
                         </Label>
                         <div className="relative">
@@ -272,10 +272,10 @@ export default function CardPaymentModal({
                                 onBlur={() => setTouched(prev => ({ ...prev, cardExpiry: true }))}
                                 maxLength={5}
                                 className={`h-11 pr-10 ${getFieldStatus('cardExpiry') === 'error'
-                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                                        : getFieldStatus('cardExpiry') === 'success'
-                                            ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
-                                            : ''
+                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                    : getFieldStatus('cardExpiry') === 'success'
+                                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                        : ''
                                     }`}
                             />
                             {getFieldStatus('cardExpiry') && (
@@ -298,7 +298,7 @@ export default function CardPaymentModal({
 
                     {/* CVV */}
                     <div className="space-y-2">
-                        <Label htmlFor="cardCvv" className="font-medium mb-1.5 block text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="cardCvv" className="font-medium mb-1.5 block text-foreground">
                             CVV
                         </Label>
                         <div className="relative">
@@ -311,10 +311,10 @@ export default function CardPaymentModal({
                                 maxLength={4}
                                 type="password"
                                 className={`h-11 pr-10 ${getFieldStatus('cardCvv') === 'error'
-                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                                        : getFieldStatus('cardCvv') === 'success'
-                                            ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
-                                            : ''
+                                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                    : getFieldStatus('cardCvv') === 'success'
+                                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
+                                        : ''
                                     }`}
                             />
                             {getFieldStatus('cardCvv') && (
@@ -336,9 +336,9 @@ export default function CardPaymentModal({
                     </div>
                 </div>
 
-                <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 flex justify-between items-center">
-                    <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Total a pagar:</span>
-                    <span className="font-bold text-2xl text-slate-900 dark:text-white">S/ {finalTotal.toFixed(2)}</span>
+                <div className="mt-4 p-4 rounded-xl bg-accent/50 border border-border flex justify-between items-center">
+                    <span className="text-sm font-medium text-muted-foreground">Total a pagar:</span>
+                    <span className="font-bold text-2xl text-foreground">S/ {finalTotal.toFixed(2)}</span>
                 </div>
 
                 <Button

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import apiClient from "@/lib/api/client";
 import { useTableCartStore } from "@/lib/stores/waiterTableStore";
 import { Loader2, ArrowLeft, Plus, Minus, Search, ShoppingBag, Bell, Receipt, CheckCircle, Smartphone, UtensilsCrossed, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
 // Types (Reusing interfaces for simplicity)
@@ -166,10 +167,10 @@ export default function TableMenuPage({ params }: { params: Promise<{ qrCode: st
                 <div className="px-4 py-2">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <input
+                        <Input
                             type="text"
                             placeholder="¿Qué se te antoja?"
-                            className="w-full pl-10 pr-4 py-2 text-sm border-none bg-gray-100 dark:bg-gray-700 rounded-xl focus:ring-0"
+                            className="pl-10 border-none bg-gray-100 dark:bg-gray-700 rounded-xl focus-visible:ring-0"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />

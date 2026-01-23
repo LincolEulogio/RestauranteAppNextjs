@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Instagram, Facebook, Twitter } from "lucide-react"
@@ -177,14 +178,14 @@ export default function ContactoPage() {
 
                                     <div className="space-y-2">
                                         <Label htmlFor="message">Mensaje</Label>
-                                        <textarea
+                                        <Textarea
                                             id="message"
                                             rows={5}
                                             placeholder="Escribe tu mensaje aquí..."
                                             value={formData.message}
                                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                             required
-                                            className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                                            className="resize-none"
                                         />
                                     </div>
 

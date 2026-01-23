@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar, Clock, Users, Phone, Mail, MapPin, Check, AlertCircle, Info } from "lucide-react"
@@ -498,13 +499,13 @@ export default function ReservasPage() {
 
                                                         <div className="space-y-2">
                                                             <Label htmlFor="notes">Notas adicionales (opcional)</Label>
-                                                            <textarea
+                                                            <Textarea
                                                                 id="notes"
                                                                 rows={3}
                                                                 placeholder="Alergias, restricciones dietéticas, solicitudes especiales..."
                                                                 value={formData.notes}
                                                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                                                className="w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                                                                className="resize-none"
                                                             />
                                                         </div>
                                                     </div>
