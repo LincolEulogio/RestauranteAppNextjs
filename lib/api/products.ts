@@ -11,6 +11,7 @@ export interface Product {
     name: string;
   } | null;
   image_url: string | null;
+  image: string | null;
   is_available: boolean;
   created_at: string;
   updated_at: string;
@@ -30,13 +31,16 @@ export async function fetchProducts(): Promise<Product[]> {
   try {
     const products = await apiClient.get<Product[]>("/products");
     // Add timestamp to prevent caching issues
-    return products.map(product => ({
+    return products.map((product) => ({
       ...product,
       // Ensure image_url is valid or provide fallback
-      image_url: product.image_url && product.image_url.startsWith('http') ? product.image_url : null
+      image_url:
+        product.image_url && product.image_url.startsWith("http")
+          ? product.image_url
+          : null,
     }));
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     throw error;
   }
 }

@@ -16,6 +16,7 @@ interface Product {
     name: string;
     price: string;
     image?: string;
+    image_url?: string;
     category_id: number;
     description?: string;
     is_available: boolean;
@@ -166,7 +167,7 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${activeCategory === cat.id
                                     ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200'
+                                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-blue-600'
                                     }`}
                             >
                                 {cat.name}
@@ -185,9 +186,9 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                                 className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md hover:border-blue-500 dark:hover:border-blue-500 transition-all group"
                             >
                                 <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-gray-700">
-                                    {product.image ? (
+                                    {(product.image || product.image_url) ? (
                                         <img
-                                            src={product.image}
+                                            src={product.image || product.image_url}
                                             alt={product.name}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                             onError={(e) => {
@@ -196,7 +197,7 @@ export default function WaiterOrderPage({ params }: { params: Promise<{ id: stri
                                             }}
                                         />
                                     ) : null}
-                                    <div className={`w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500 ${product.image ? 'hidden' : ''}`}>
+                                    <div className={`w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500 ${(product.image || product.image_url) ? 'hidden' : ''}`}>
                                         <div className="text-center">
                                             <div className="bg-gray-200 dark:bg-gray-600 rounded-full p-2 mb-1 mx-auto w-fit">
                                                 <ShoppingBag className="w-5 h-5" />

@@ -28,7 +28,7 @@ export default function FeaturedDishes() {
         description: product.description,
         price: parseFloat(product.price.toString()),
         category: product.category?.name || "Sin categoría",
-        image: product.image || "https://placehold.co/600x400/e2e8f0/64748b?text=No+Image",
+        image: product.image || product.image_url || "https://placehold.co/600x400/e2e8f0/64748b?text=No+Image",
         rating: 4.5,
         reviews: 0,
     }))

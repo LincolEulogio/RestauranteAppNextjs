@@ -27,7 +27,7 @@ export const useWaiterCartStore = create<WaiterCartState>()(
       addItem: (product, quantity = 1, notes = "") => {
         set((state) => {
           const existingItem = state.items.find(
-            (item) => item.product_id === product.id
+            (item) => item.product_id === product.id,
           );
 
           if (existingItem) {
@@ -35,7 +35,7 @@ export const useWaiterCartStore = create<WaiterCartState>()(
               items: state.items.map((item) =>
                 item.product_id === product.id
                   ? { ...item, quantity: item.quantity + quantity }
-                  : item
+                  : item,
               ),
             };
           }
@@ -49,7 +49,7 @@ export const useWaiterCartStore = create<WaiterCartState>()(
                 price: parseFloat(product.price),
                 quantity,
                 notes,
-                image: product.image,
+                image: product.image || product.image_url,
               },
             ],
           };
@@ -70,7 +70,7 @@ export const useWaiterCartStore = create<WaiterCartState>()(
 
         set((state) => ({
           items: state.items.map((item) =>
-            item.product_id === productId ? { ...item, quantity } : item
+            item.product_id === productId ? { ...item, quantity } : item,
           ),
         }));
       },
@@ -80,13 +80,13 @@ export const useWaiterCartStore = create<WaiterCartState>()(
       total: () => {
         return get().items.reduce(
           (sum, item) => sum + item.price * item.quantity,
-          0
+          0,
         );
       },
     }),
     {
       name: "waiter-cart-storage", // name of the item in the storage (must be unique)
       storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
-    }
-  )
+    },
+  ),
 );
