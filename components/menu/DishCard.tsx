@@ -1,10 +1,11 @@
 "use client"
 
 import Image from "next/image"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, Plus, Check } from "lucide-react"
+import { Star, Plus, Check, ImageIcon } from "lucide-react"
 import { useCart } from "@/lib/hooks"
 import type { Dish } from "@/lib/types"
 
@@ -12,9 +13,12 @@ type DishCardProps = Omit<Dish, "category">
 
 export default function DishCard({ id, name, description, price, image, rating, reviews }: DishCardProps) {
     const { addToCart, isInCart, getItemQuantity } = useCart()
+    const [imageError, setImageError] = useState(false)
+    const [imageLoading, setImageLoading] = useState(true)
 
     const itemQuantity = getItemQuantity(id)
     const inCart = isInCart(id)
+    const hasValidImage = image && image !== "https://placehold.co/600x400/e2e8f0/64748b?text=No+Image" && !imageError
 
     const handleAddToCart = () => {
         addToCart({
@@ -28,17 +32,41 @@ export default function DishCard({ id, name, description, price, image, rating, 
 
     return (
         <Card className="overflow-hidden group border border-border bg-card shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-            <div className="relative h-48 w-full overflow-hidden">
-                <Image
-                    src={image}
-                    alt={name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    priority={false}
-                    placeholder="blur"
-                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8wNPvd7POQAAAABJRU5ErkJggg=="
-                />
+            <div className="relative h-48 w-full overflow-hidden bg-muted/30">
+                {hasValidImage ? (
+                    <>
+                        <Image
+                            src={image}
+                            alt={name}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            priority={false}
+                            placeholder="blur"
+                            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8wNPvd7POQAAAABJRU5ErkJggg=="
+                            onError={() => {
+                                setImageError(true);
+                                setImageLoading(false);
+                            }}
+                            onLoad={() => {
+                                setImageError(false);
+                                setImageLoading(false);
+                            }}
+                        />
+                        {imageLoading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="flex items-center justify-center h-full bg-gradient-to-br from-muted/50 to-muted/80">
+                        <div className="text-center p-4">
+                            <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground/60 mb-2" />
+                            <p className="text-xs text-muted-foreground font-medium">Sin imagen</p>
+                        </div>
+                    </div>
+                )}
             </div>
             <CardHeader className="p-4 pb-2">
                 <div className="flex justify-between items-start">
