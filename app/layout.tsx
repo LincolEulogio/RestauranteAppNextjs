@@ -38,6 +38,7 @@ export default function RootLayout({
                         </ProgressBarProvider>
                     </QueryProvider>
                     <ScrollToTop />
+                    <script src="https://checkout.culqi.com/js/v4"></script>
                 </ThemeProvider>
             </body>
         </html>
