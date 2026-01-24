@@ -41,6 +41,23 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "Sabor - Restaurante Premium",
     description: "La mejor experiencia culinaria en tu ciudad.",
+    manifest: "/manifest.json",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "RestaurantApp",
+    },
+};
+
+/**
+ * Configuración de Viewport
+ * Separado de metadata según requerimientos de Next.js 15+
+ */
+export const viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    themeColor: "#f97316",
 };
 
 /**
@@ -60,6 +77,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="es" suppressHydrationWarning>
+            <head>
+                <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+            </head>
             <body className={cn(inter.className, "min-h-screen bg-background font-sans antialiased")}>
                 {/* Proveedor de temas - Gestiona modo claro/oscuro */}
                 <ThemeProvider
