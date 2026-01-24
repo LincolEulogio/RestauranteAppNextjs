@@ -1,3 +1,27 @@
+/**
+ * Componente Hero - Banner Principal de la Página de Inicio
+ * 
+ * Sección hero con imagen de fondo, texto promocional y llamados a la acción.
+ * 
+ * Características:
+ * - Imagen de fondo con overlay oscuro para mejor legibilidad
+ * - Animaciones con Framer Motion (entrada desde la izquierda y abajo)
+ * - Diseño responsive con diferentes tamaños de texto
+ * - Dos botones CTA: "Ver Menú Completo" y "Hacer Reserva"
+ * - Estadísticas del restaurante (rating, pedidos, tiempo de delivery)
+ * - Imagen del chef con efecto de hover y badge flotante
+ * - Gradiente radial animado de fondo
+ * 
+ * Layout responsive:
+ * - 1 columna en móvil (solo texto)
+ * - 2 columnas en desktop (texto + imagen del chef)
+ * 
+ * Optimizaciones:
+ * - Imagen con priority para carga rápida
+ * - Blur placeholder para mejor UX
+ * - Lazy loading de imagen del chef
+ */
+
 "use client"
 
 import { Button } from "@/components/ui/button"
@@ -6,6 +30,14 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Clock, Star, Utensils } from "lucide-react"
 
+/**
+ * Componente Hero
+ * 
+ * Banner principal con animaciones, imagen de fondo y CTAs.
+ * Muestra el mensaje principal del restaurante y estadísticas clave.
+ * 
+ * @returns {JSX.Element} Sección hero completa con animaciones
+ */
 export default function Hero() {
     return (
         <section id="tour-welcome" className="relative min-h-[500px] sm:min-h-[600px] lg:h-[700px] w-full overflow-hidden bg-slate-950 flex items-center py-12 sm:py-0">

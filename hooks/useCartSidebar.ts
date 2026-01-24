@@ -1,3 +1,32 @@
+/**
+ * Hook Personalizado del Sidebar del Carrito - useCartSidebar
+ *
+ * Este hook gestiona toda la lógica del carrito de compras y el proceso de checkout:
+ *
+ * Funcionalidades principales:
+ * - Gestión del estado del sidebar (abrir/cerrar)
+ * - Manejo de datos del cliente (nombre, dirección, contacto, etc.)
+ * - Selección de tipo de pedido (delivery/pickup)
+ * - Selección de método de pago (tarjeta, Yape, Plin, efectivo)
+ * - Integración con Culqi para procesamiento de pagos
+ * - Creación de pedidos en el backend
+ * - Validación de formularios
+ * - Cálculo de totales y aplicación de promociones
+ * - Manejo de estados de éxito y error
+ *
+ * Flujo de pago:
+ * 1. Usuario completa datos personales y selecciona método de pago
+ * 2. Se crea el pedido en el backend
+ * 3. Si es pago electrónico (tarjeta/Yape/Plin), se abre Culqi Checkout
+ * 4. Culqi procesa el pago y ejecuta callback
+ * 5. Se muestra mensaje de éxito y se limpia el carrito
+ *
+ * Integración con Culqi:
+ * - Tarjeta: Usa Culqi.token para tokenizar datos de tarjeta
+ * - Yape/Plin: Usa Culqi.order para generar código QR de pago
+ * - Efectivo: Crea pedido directamente sin Culqi
+ */
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,6 +37,23 @@ import { CreateOrderData, createOrder, OrderItem } from "../lib/api/orders";
 import { processCardPayment, createCulqiOrder } from "../lib/api/payments";
 import { processCartItems, calculateCartTotals } from "@/lib/cart-helpers";
 
+/**
+ * Hook useCartSidebar
+ *
+ * Hook personalizado que encapsula toda la lógica del carrito de compras,
+ * proceso de checkout y gestión de pagos.
+ *
+ * @returns {Object} Objeto con estados, funciones y datos del carrito
+ *
+ * @example
+ * const {
+ *   isOpen,
+ *   setIsOpen,
+ *   totals,
+ *   handleProceedToPayment,
+ *   displayItems
+ * } = useCartSidebar();
+ */
 export const useCartSidebar = () => {
   const {
     items,

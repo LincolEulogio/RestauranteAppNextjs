@@ -1,5 +1,26 @@
+/**
+ * Constantes del Menú - menu.ts
+ *
+ * Define las categorías y platos del menú del restaurante.
+ * Estos datos se usan como fallback cuando no hay conexión con el backend.
+ *
+ * Contenido:
+ * - MENU_CATEGORIES: Array de categorías del menú con iconos
+ * - MENU_DISHES: Array de platos con detalles completos
+ * - FEATURED_DISHES: Platos destacados filtrados del menú
+ *
+ * Nota: En producción, estos datos se obtienen del backend vía API.
+ * Este archivo sirve como datos de ejemplo y fallback.
+ */
+
 import { Category, Dish } from "@/lib/types";
 
+/**
+ * Categorías del Menú
+ *
+ * Array de categorías disponibles en el restaurante.
+ * Cada categoría tiene un icono de lucide-react asociado.
+ */
 export const MENU_CATEGORIES: Category[] = [
   { id: "todos", name: "Todos", icon: "Utensils" },
   { id: "entradas", name: "Entradas", icon: "Soup" },
@@ -11,6 +32,17 @@ export const MENU_CATEGORIES: Category[] = [
   { id: "especiales", name: "Especiales del Chef", icon: "Star" },
 ];
 
+/**
+ * Platos del Menú
+ *
+ * Array de platos disponibles con información completa:
+ * - Nombre, descripción y precio
+ * - Categoría a la que pertenece
+ * - Imagen de Unsplash
+ * - Rating y número de reseñas
+ *
+ * Estos datos son de ejemplo y en producción se obtienen del backend.
+ */
 export const MENU_DISHES: Dish[] = [
   {
     id: "1",
@@ -103,5 +135,5 @@ export const MENU_DISHES: Dish[] = [
 ];
 
 export const FEATURED_DISHES = MENU_DISHES.filter((dish) =>
-  ["1", "4", "6"].includes(dish.id)
+  ["1", "4", "6"].includes(dish.id),
 );

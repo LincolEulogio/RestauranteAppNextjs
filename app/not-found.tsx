@@ -1,3 +1,31 @@
+/**
+ * Página 404 - No Encontrada
+ * 
+ * Página de error personalizada que se muestra cuando el usuario intenta
+ * acceder a una ruta que no existe.
+ * 
+ * Características:
+ * - Diseño temático del restaurante (404 con icono de cubiertos)
+ * - Animaciones con Framer Motion
+ * - Gradiente de fondo naranja/ámbar
+ * - Número 404 animado con icono central
+ * - Mensajes amigables y humorísticos
+ * - Botones de navegación rápida
+ * - Grid de accesos directos (Inicio, Menú, Volver)
+ * - Soporte para modo oscuro
+ * 
+ * Animaciones:
+ * - Entrada escalonada de elementos
+ * - Rotación del icono de cubiertos
+ * - Efectos hover en botones
+ * - Escalado suave de elementos
+ * 
+ * Navegación:
+ * - Botón principal: Volver al Inicio
+ * - Botón secundario: Ver Menú
+ * - Grid de accesos: Inicio, Menú, Volver atrás
+ */
+
 'use client'
 
 import { motion } from 'framer-motion'
@@ -5,6 +33,14 @@ import { Home, ArrowLeft, Utensils, SearchX } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
+/**
+ * Componente NotFound
+ * 
+ * Página 404 personalizada con diseño temático del restaurante.
+ * Incluye animaciones, navegación y mensajes amigables.
+ * 
+ * @returns {JSX.Element} Página 404 completa con animaciones
+ */
 export default function NotFound() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100/50 dark:from-gray-950 dark:via-gray-900 dark:to-orange-950/20 flex items-center justify-center px-4 py-16">

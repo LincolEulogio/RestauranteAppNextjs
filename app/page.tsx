@@ -1,3 +1,22 @@
+/**
+ * Página Principal (Homepage) - Home
+ * 
+ * Esta es la página de inicio del restaurante que muestra todas las secciones principales:
+ * - Hero: Banner principal con imagen destacada
+ * - Categorías: Grid de categorías de productos
+ * - Platos Destacados: Productos más populares o recomendados
+ * - Promociones: Ofertas y combos especiales
+ * - Sobre Nosotros: Información del restaurante
+ * - Testimonios: Reseñas de clientes
+ * - Galería: Fotos del restaurante y platillos
+ * - Llamado a la Acción: Sección para hacer reservas
+ * 
+ * Optimización de rendimiento:
+ * - Usa carga dinámica (dynamic import) para componentes pesados
+ * - Muestra skeletons mientras cargan los componentes
+ * - Mejora el tiempo de carga inicial (First Contentful Paint)
+ */
+
 import dynamic from "next/dynamic"
 import Hero from "@/components/home/Hero"
 import FeaturedDishes from "@/components/home/FeaturedDishes"
@@ -8,7 +27,13 @@ import { Utensils, Salad, ChefHat, Cake, Coffee, Tag, PackageOpen, Star } from "
 import { Skeleton } from "@/components/ui/skeleton"
 
 
-// Componentes cargados dinámicamente para mejorar el rendimiento inicial use dynamic
+/**
+ * Componentes cargados dinámicamente para mejorar el rendimiento inicial
+ * 
+ * Estos componentes se cargan solo cuando son necesarios (lazy loading),
+ * reduciendo el tamaño del bundle inicial y mejorando el tiempo de carga.
+ * Mientras cargan, se muestra un skeleton placeholder.
+ */
 const Promotions = dynamic(() => import("@/components/home/Promotions"), {
     loading: () => <div className="container py-16"><Skeleton className="h-96 w-full rounded-3xl" /></div>
 })
@@ -28,6 +53,12 @@ const DishCard = dynamic(() => import("@/components/menu/DishCard"), {
     loading: () => <Skeleton className="h-[400px] w-full rounded-xl" />
 })
 
+/**
+ * Mapeo de iconos para cada categoría
+ * 
+ * Asocia cada ID de categoría con su icono correspondiente de lucide-react.
+ * Si no se encuentra un icono específico, se usa Utensils como predeterminado.
+ */
 const categoryIcons: Record<string, any> = {
     "entradas": Salad,
     "platos-principales": ChefHat,
@@ -38,13 +69,24 @@ const categoryIcons: Record<string, any> = {
     "especiales": Star,
 }
 
+/**
+ * Componente Home
+ * 
+ * Página principal del restaurante que muestra todas las secciones de la landing page.
+ * Incluye navegación (Header), contenido principal y pie de página (Footer).
+ * 
+ * @returns {JSX.Element} Página de inicio completa
+ */
 export default function Home() {
     return (
         <main className="min-h-screen flex flex-col">
+            {/* Encabezado con navegación */}
             <Header />
 
+            {/* Sección Hero - Banner principal */}
             <Hero />
 
+            {/* Sección de Categorías */}
             <section className="py-16 container" id="category-section">
                 <div className="flex justify-between items-end mb-8">
                     <div>
@@ -53,6 +95,7 @@ export default function Home() {
                     </div>
                 </div>
 
+                {/* Grid de categorías con iconos */}
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                     {categories.filter(c => c.id !== 'todos').map((category) => {
                         const IconComponent = categoryIcons[category.id] || Utensils
@@ -71,25 +114,25 @@ export default function Home() {
                 </div>
             </section>
 
-
+            {/* Sección de Platos Destacados */}
             <FeaturedDishes />
 
-
-            {/* Promociones */}
+            {/* Sección de Promociones - Carga dinámica */}
             <Promotions />
 
-            {/* Sobre Nosotros */}
+            {/* Sección Sobre Nosotros - Carga dinámica */}
             <AboutUs />
 
-            {/* Testimonios */}
+            {/* Sección de Testimonios - Carga dinámica */}
             <Testimonials />
 
-            {/* Galería del Restaurante */}
+            {/* Galería del Restaurante - Carga dinámica */}
             <Gallery />
 
-            {/* Llamado a la Acción - Reservas */}
+            {/* Llamado a la Acción - Reservas - Carga dinámica */}
             <ReservationCTA />
 
+            {/* Pie de página */}
             <Footer />
         </main>
     )

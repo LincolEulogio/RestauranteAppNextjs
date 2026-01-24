@@ -1,3 +1,37 @@
+/**
+ * Componente CartSidebar - Sidebar del Carrito de Compras
+ * 
+ * Panel lateral deslizable que muestra el carrito de compras y el proceso de checkout.
+ * 
+ * Características principales:
+ * - Sheet (panel lateral) con el contenido del carrito
+ * - Botón flotante con badge mostrando cantidad de items
+ * - Secciones separadas para items promocionales y regulares
+ * - Formulario completo de datos del cliente
+ * - Selector de tipo de pedido (delivery/pickup)
+ * - Selector de método de pago (tarjeta, Yape, Plin, efectivo)
+ * - Resumen con subtotal, envío y total
+ * - Modales específicos para cada método de pago
+ * 
+ * Estructura del carrito:
+ * 1. Items promocionales (si hay promoción activa)
+ * 2. Items regulares agregados individualmente
+ * 3. Resumen de totales
+ * 4. Formulario de datos del cliente
+ * 5. Selector de método de pago
+ * 6. Botón de proceder al pago
+ * 
+ * Modales de pago:
+ * - CardPaymentModal: Para pagos con tarjeta (Culqi)
+ * - YapePaymentModal: Para pagos con Yape
+ * - PlinPaymentModal: Para pagos con Plin
+ * 
+ * Integración:
+ * - Usa el hook useCartSidebar para toda la lógica
+ * - Componentes de CartItems para renderizar productos
+ * - Componentes de CartForms para formularios
+ */
+
 "use client"
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -13,7 +47,24 @@ import { useCartSidebar } from "@/hooks/useCartSidebar"
 import { CartPromoSection, CartRegularItems } from "./CartItems"
 import { CartSummary, CartOrderTypeSelector, CartCustomerForm, CartPaymentMethodSelector } from "./CartForms"
 
+/**
+ * Componente CartSidebar
+ * 
+ * Panel lateral del carrito de compras con proceso completo de checkout.
+ * Gestiona la visualización del carrito, formularios y modales de pago.
+ * 
+ * @returns {JSX.Element} Sheet con carrito y modales de pago
+ */
 export default function CartSidebar() {
+    /**
+     * Desestructuración del hook useCartSidebar
+     * 
+     * Obtiene todos los estados, datos y funciones necesarias para:
+     * - Gestionar el estado del sidebar y modales
+     * - Manejar datos del formulario del cliente
+     * - Procesar items del carrito y promociones
+     * - Ejecutar acciones de pago y validación
+     */
     const {
         // State
         isOpen, setIsOpen,
